@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>07bfa67f-39bc-47fa-b893-48a3f9e88738</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Eruru.Html</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Html.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlElementType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlKeyword.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlNotSupportException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTagType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReaderException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlToken.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTagReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlTokenType.cs" />
+  </ItemGroup>
+</Project>
