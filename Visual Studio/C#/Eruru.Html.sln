@@ -9,9 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{363A08AC-8731-42B4-AAF6-9A65083313F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html_For_.NET_Framework_2.0", "Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj", "{2C64C437-677A-4041-87FC-9F672625F293}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{07bfa67f-39bc-47fa-b893-48a3f9e88738}*SharedItemsImports = 13
+		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{2c64c437-677a-4041-87fc-9f672625f293}*SharedItemsImports = 4
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{363a08ac-8731-42b4-aaf6-9a65083313f4}*SharedItemsImports = 4
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{879a7502-77a5-4321-9930-320de8e02694}*SharedItemsImports = 4
 	EndGlobalSection
@@ -28,6 +31,10 @@ Global
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

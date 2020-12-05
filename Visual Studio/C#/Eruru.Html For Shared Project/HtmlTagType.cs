@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eruru.Html {
+﻿namespace Eruru.Html {
 
 	public enum HtmlTagType {
 

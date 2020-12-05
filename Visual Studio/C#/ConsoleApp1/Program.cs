@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Eruru.Html;
 
 namespace ConsoleApp1 {
@@ -9,7 +8,7 @@ namespace ConsoleApp1 {
 		static void Main (string[] args) {
 			Console.Title = nameof (ConsoleApp1);
 			try {
-				Html html = Html.Load (@"D:\temp.html");
+				Html html = Html.Load (@"..\..\..\Assets\www.zhihu.com.html");
 				HtmlElement[] cardsElement = html.GetElementsByClassName ("Card TopstoryItem TopstoryItem--old TopstoryItem-isRecommend");
 				foreach (HtmlElement cardElement in cardsElement) {
 					foreach (HtmlElement aElement in cardElement.GetElementsByTagName ("a")) {

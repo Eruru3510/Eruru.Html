@@ -103,6 +103,15 @@ namespace Eruru.Html {
 			return values.ToArray ();
 		}
 
+		public static bool Contains (string[] a, HtmlAttribute b) {
+			for (int i = 0; i < a.Length; i++) {
+				if (!b.Values.Contains (a[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 	}
 
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
 namespace Eruru.Html {
 
@@ -41,11 +40,11 @@ namespace Eruru.Html {
 					case HtmlTagType.End:
 						if (name != null && Current.Name != name) {
 							if (parentName != null && HtmlAPI.Equals (Current.Name, parentName)) {
-								Console.WriteLine ($"标签不配对，{name}没有结束标签");
+								//Console.WriteLine ($"标签不配对，{name}没有结束标签");
 								element = null;
 								return false;
 							}
-							Console.WriteLine ($"标签不配对，{Current.Name}没有开始标签");
+							//Console.WriteLine ($"标签不配对，{Current.Name}没有开始标签");
 							element = null;
 							return true;
 						}

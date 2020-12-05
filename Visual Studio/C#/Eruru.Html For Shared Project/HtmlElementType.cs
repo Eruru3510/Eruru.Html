@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eruru.Html {
+﻿namespace Eruru.Html {
 
 	public enum HtmlElementType {
 
@@ -10,7 +8,6 @@ namespace Eruru.Html {
 		Double = 1 << 3,
 		Text = 1 << 4,
 		Comment = 1 << 5,
-		Content = Root | Text | Comment,
 		Tag = Define | Single | Double
 
 	}

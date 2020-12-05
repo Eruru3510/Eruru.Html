@@ -23,5 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)HtmlToken.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTokenType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHtmlElement.cs" />
   </ItemGroup>
 </Project>

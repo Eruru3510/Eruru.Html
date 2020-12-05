@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Eruru.Html {
 
@@ -36,6 +35,7 @@ namespace Eruru.Html {
 
 		protected string ReadContent (string end = "<") {
 			StringBuilder stringBuilder = new StringBuilder ();
+			SkipWhiteSpace ();
 			while (TextReader.Peek () > -1) {
 				char character = Peek ();
 				stringBuilder.Append (character);

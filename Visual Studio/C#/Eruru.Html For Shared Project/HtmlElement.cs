@@ -1,30 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Eruru.Html {
 
-	public class HtmlElement {
+	public class HtmlElement : IHtmlElement {
 
 		public HtmlElementType Type { get; set; }
 		public string Name { get; set; }
 		public string Content { get; set; }
 		public List<HtmlAttribute> Attributes { get; set; }
 		public List<HtmlElement> Elements { get; set; }
-		public string InnerHtml {
+		public List<string> ClassList {
 
-			get => Serialize (false).ToString ();
+			get => GetAttribute (HtmlKeyword.Class)?.Values;
 
 		}
 		public string OuterHtml {
 
 			get => Serialize (true).ToString ();
-
-		}
-		public HtmlElement this[int index] {
-
-			get => Elements[index];
 
 		}
 
@@ -74,98 +68,21 @@ namespace Eruru.Html {
 			if (values.Count == 1) {
 				return values[0];
 			}
-			return HtmlAPI.Equals (name, HtmlKeyword.Class) ? string.Join (" ", values.ToArray ()) : values[0];
-		}
-
-		public HtmlElement GetElementById (string id) {
-			if (id is null) {
-				throw new ArgumentNullException (nameof (id));
+			StringBuilder stringBuilder = new StringBuilder ();
+			for (int i = 0; i < ClassList.Count; i++) {
+				if (i > 0) {
+					stringBuilder.Append (' ');
+				}
+				stringBuilder.Append (ClassList[i]);
 			}
-			HtmlElement element = null;
-			ForEachElement (current => {
-				if (HtmlAPI.Equals (current.GetAttributeValue (nameof (id)), id)) {
-					element = current;
-					return false;
-				}
-				return true;
-			});
-			return element;
-		}
-
-		public HtmlElement[] GetElementsByTagName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			ForEachElement (element => {
-				if (HtmlAPI.Equals (element.Name, name)) {
-					elements.Add (element);
-				}
-				return true;
-			});
-			return elements.ToArray ();
-		}
-
-		public HtmlElement[] GetElementsByClassName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			string[] classes = HtmlAPI.Split (name);
-			ForEachElement (element => {
-				HtmlAttribute attribute = element.GetAttribute (HtmlKeyword.Class);
-				if (attribute is null) {
-					return true;
-				}
-				for (int i = 0; i < classes.Length; i++) {
-					if (!attribute.Values.Contains (classes[i])) {
-						return true;
-					}
-				}
-				elements.Add (element);
-				return true;
-			});
-			return elements.ToArray ();
-		}
-
-		public HtmlElement[] GetElementsByName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			ForEachElement (current => {
-				if (HtmlAPI.Equals (current.GetAttributeValue (nameof (name)), name)) {
-					elements.Add (current);
-				}
-				return true;
-			});
-			return elements.ToArray ();
-		}
-
-		bool ForEachElement (HtmlFunc<HtmlElement, bool> func) {
-			if (func is null) {
-				throw new ArgumentNullException (nameof (func));
-			}
-			foreach (HtmlElement element in Elements) {
-				if (HtmlAPI.HasFlag (element.Type, HtmlElementType.Tag)) {
-					if (!func (element)) {
-						return false;
-					}
-				}
-				if (element.Elements != null) {
-					if (!element.ForEachElement (func)) {
-						return false;
-					}
-				}
-			}
-			return true;
+			return stringBuilder.ToString ();
 		}
 
 		StringBuilder Serialize (bool writeSelf, StringBuilder stringBuilder = null, int indent = 0) {
 			if (stringBuilder is null) {
 				stringBuilder = new StringBuilder ();
 			}
-			if (writeSelf && Type != HtmlElementType.Root) {
+			if (writeSelf) {
 				switch (Type) {
 					case HtmlElementType.Text:
 						stringBuilder.Append (Content);
@@ -204,16 +121,18 @@ namespace Eruru.Html {
 				stringBuilder.Append (HtmlKeyword.RightAngleBracket);
 			}
 			if (Elements != null) {
-				if (Type != HtmlElementType.Root) {
+				if (writeSelf) {
 					indent++;
 				}
 				for (int i = 0; i < Elements.Count; i++) {
-					if (i > 0 || Type != HtmlElementType.Root) {
+					if (i > 0 || writeSelf) {
 						NewLineIndent (stringBuilder, indent);
 					}
 					Elements[i].Serialize (true, stringBuilder, indent);
 				}
-				indent--;
+				if (writeSelf) {
+					indent--;
+				}
 			}
 			if (writeSelf && Type == HtmlElementType.Double) {
 				if (Elements.Count > 0) {
@@ -236,6 +155,148 @@ namespace Eruru.Html {
 				stringBuilder.Append ('\t');
 			}
 		}
+
+		#region IHtmlElement
+
+		public string InnerHtml {
+
+			get => Serialize (false).ToString ();
+
+		}
+
+		public HtmlElement this[int index] {
+
+			get => Elements[index];
+
+		}
+
+		public HtmlElement GetElementById (string id) {
+			if (id is null) {
+				throw new ArgumentNullException (nameof (id));
+			}
+			HtmlElement element = null;
+			ForEachElement (current => {
+				if (HtmlAPI.Equals (current.GetAttributeValue (nameof (id)), id)) {
+					element = current;
+					return false;
+				}
+				return true;
+			});
+			return element;
+		}
+
+		public HtmlElement GetElementByTagName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlElement targetElement = null;
+			ForEachElement (element => {
+				if (HtmlAPI.Equals (element.Name, name)) {
+					targetElement = element;
+					return false;
+				}
+				return true;
+			});
+			return targetElement;
+		}
+
+		public HtmlElement GetElementByClassName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlElement targetElement = null;
+			string[] classes = HtmlAPI.Split (name);
+			ForEachElement (element => {
+				HtmlAttribute attribute = element.GetAttribute (HtmlKeyword.Class);
+				if (attribute is null || !HtmlAPI.Contains (classes, attribute)) {
+					return true;
+				}
+				targetElement = element;
+				return false;
+			});
+			return targetElement;
+		}
+
+		public HtmlElement GetElementByName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlElement targetElement = null;
+			ForEachElement (element => {
+				if (HtmlAPI.Equals (element.GetAttributeValue (nameof (name)), name)) {
+					targetElement = element;
+					return false;
+				}
+				return true;
+			});
+			return targetElement;
+		}
+
+		public HtmlElement[] GetElementsByTagName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			List<HtmlElement> elements = new List<HtmlElement> ();
+			ForEachElement (element => {
+				if (HtmlAPI.Equals (element.Name, name)) {
+					elements.Add (element);
+				}
+				return true;
+			});
+			return elements.ToArray ();
+		}
+
+		public HtmlElement[] GetElementsByClassName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			List<HtmlElement> elements = new List<HtmlElement> ();
+			string[] classes = HtmlAPI.Split (name);
+			ForEachElement (element => {
+				HtmlAttribute attribute = element.GetAttribute (HtmlKeyword.Class);
+				if (attribute is null || !HtmlAPI.Contains (classes, attribute)) {
+					return true;
+				}
+				elements.Add (element);
+				return true;
+			});
+			return elements.ToArray ();
+		}
+
+		public HtmlElement[] GetElementsByName (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			List<HtmlElement> elements = new List<HtmlElement> ();
+			ForEachElement (element => {
+				if (HtmlAPI.Equals (element.GetAttributeValue (nameof (name)), name)) {
+					elements.Add (element);
+				}
+				return true;
+			});
+			return elements.ToArray ();
+		}
+
+		public bool ForEachElement (HtmlFunc<HtmlElement, bool> func) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			foreach (HtmlElement element in Elements) {
+				if (HtmlAPI.HasFlag (element.Type, HtmlElementType.Tag)) {
+					if (!func (element)) {
+						return false;
+					}
+				}
+				if (element.Elements != null) {
+					if (!element.ForEachElement (func)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		#endregion
 
 	}
 
