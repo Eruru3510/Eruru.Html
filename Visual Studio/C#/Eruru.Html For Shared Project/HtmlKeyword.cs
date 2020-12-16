@@ -15,6 +15,8 @@
 		public const string CommentHead = "<!--";
 		public const string CommentTail = "-->";
 		public const string Class = "class";
+		public const string ID = "id";
+		public const string Name = "name";
 		public const string Html = "html";
 		public const string Head = "head";
 		public const string Body = "body";

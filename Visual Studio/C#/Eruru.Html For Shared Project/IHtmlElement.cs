@@ -14,11 +14,17 @@
 
 		HtmlElement GetElementByName (string name);
 
+		HtmlElement GetElementByAttribute (string name);
+		HtmlElement GetElementByAttribute (string name, string value);
+
 		HtmlElement[] GetElementsByTagName (string name);
 
 		HtmlElement[] GetElementsByClassName (string name);
 
 		HtmlElement[] GetElementsByName (string name);
+
+		HtmlElement[] GetElementsByAttribute (string name);
+		HtmlElement[] GetElementsByAttribute (string name, string value);
 
 		bool ForEachElement (HtmlFunc<HtmlElement, bool> func);
 

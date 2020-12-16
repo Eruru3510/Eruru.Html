@@ -44,7 +44,7 @@ namespace Eruru.Html {
 				}
 				Read ();
 			}
-			return stringBuilder.ToString ().Trim ();
+			return stringBuilder.ToString ().TrimEnd ();
 		}
 
 		char Peek () {
@@ -95,6 +95,7 @@ namespace Eruru.Html {
 
 		string ReadValue (ref bool isSingle) {
 			StringBuilder stringBuilder = new StringBuilder ();
+			SkipWhiteSpace ();
 			while (TextReader.Peek () > -1) {
 				char character = Peek ();
 				if (char.IsWhiteSpace (character)) {
@@ -128,7 +129,6 @@ namespace Eruru.Html {
 			List<HtmlAttribute> attributes = new List<HtmlAttribute> ();
 			while (TextReader.Peek () >= 0) {
 				char character;
-				SkipWhiteSpace ();
 				HtmlAttribute attribute = new HtmlAttribute (ReadValue (ref isSingle));
 				if (attribute.Name.Length == 0) {
 					break;
@@ -138,7 +138,6 @@ namespace Eruru.Html {
 				switch (character) {
 					case HtmlKeyword.EqualSign:
 						Read ();
-						SkipWhiteSpace ();
 						attribute.Values = new List<string> ();
 						string value = ReadValue (ref isSingle);
 						if (HtmlAPI.Equals (attribute.Name, HtmlKeyword.Class)) {

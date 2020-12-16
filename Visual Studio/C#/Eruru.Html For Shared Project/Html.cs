@@ -89,6 +89,22 @@ namespace Eruru.Html {
 			return Root.GetElementByName (name);
 		}
 
+		public HtmlElement GetElementByAttribute (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementByAttribute (name);
+		}
+		public HtmlElement GetElementByAttribute (string name, string value) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return Root.GetElementByAttribute (name, value);
+		}
+
 		public HtmlElement[] GetElementsByTagName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
@@ -108,6 +124,22 @@ namespace Eruru.Html {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return Root.GetElementsByName (name);
+		}
+
+		public HtmlElement[] GetElementsByAttribute (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementsByAttribute (name);
+		}
+		public HtmlElement[] GetElementsByAttribute (string name, string value) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return Root.GetElementsByAttribute (name, value);
 		}
 
 		public bool ForEachElement (HtmlFunc<HtmlElement, bool> func) {

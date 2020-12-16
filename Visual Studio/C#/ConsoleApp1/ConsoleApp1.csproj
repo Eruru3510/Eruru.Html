@@ -41,5 +41,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

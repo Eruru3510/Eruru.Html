@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Eruru.Html {
 
-	public class HtmlElement : IHtmlElement {
+	public class HtmlElement : IHtmlElement, IEnumerable<HtmlElement> {
 
 		public HtmlElementType Type { get; set; }
 		public string Name { get; set; }
@@ -61,21 +62,7 @@ namespace Eruru.Html {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			List<string> values = GetAttribute (name)?.Values;
-			if (values is null || values.Count == 0) {
-				return string.Empty;
-			}
-			if (values.Count == 1) {
-				return values[0];
-			}
-			StringBuilder stringBuilder = new StringBuilder ();
-			for (int i = 0; i < ClassList.Count; i++) {
-				if (i > 0) {
-					stringBuilder.Append (' ');
-				}
-				stringBuilder.Append (ClassList[i]);
-			}
-			return stringBuilder.ToString ();
+			return GetAttribute (name)?.Value ?? string.Empty;
 		}
 
 		StringBuilder Serialize (bool writeSelf, StringBuilder stringBuilder = null, int indent = 0) {
@@ -110,7 +97,7 @@ namespace Eruru.Html {
 						if (attribute.Values != null) {
 							stringBuilder.Append (HtmlKeyword.EqualSign);
 							stringBuilder.Append (HtmlKeyword.DoubleQuot);
-							stringBuilder.Append (string.Join (" ", attribute.Values.ToArray ()));
+							stringBuilder.Append (attribute.Value);
 							stringBuilder.Append (HtmlKeyword.DoubleQuot);
 						}
 					}
@@ -156,6 +143,35 @@ namespace Eruru.Html {
 			}
 		}
 
+		HtmlElement GetElement (HtmlFunc<HtmlElement, bool> func) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			HtmlElement targetElement = null;
+			ForEachElement (element => {
+				if (func (element)) {
+					targetElement = element;
+					return false;
+				}
+				return true;
+			});
+			return targetElement;
+		}
+
+		HtmlElement[] GetElements (HtmlFunc<HtmlElement, bool> func) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			List<HtmlElement> elements = new List<HtmlElement> ();
+			ForEachElement (element => {
+				if (func (element)) {
+					elements.Add (element);
+				}
+				return true;
+			});
+			return elements.ToArray ();
+		}
+
 		#region IHtmlElement
 
 		public string InnerHtml {
@@ -174,107 +190,125 @@ namespace Eruru.Html {
 			if (id is null) {
 				throw new ArgumentNullException (nameof (id));
 			}
-			HtmlElement element = null;
-			ForEachElement (current => {
-				if (HtmlAPI.Equals (current.GetAttributeValue (nameof (id)), id)) {
-					element = current;
-					return false;
-				}
-				return true;
+			return GetElement (element => {
+				return HtmlAPI.Equals (element.GetAttributeValue (HtmlKeyword.ID), id);
 			});
-			return element;
 		}
 
 		public HtmlElement GetElementByTagName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			HtmlElement targetElement = null;
-			ForEachElement (element => {
-				if (HtmlAPI.Equals (element.Name, name)) {
-					targetElement = element;
-					return false;
-				}
-				return true;
+			return GetElement (element => {
+				return HtmlAPI.Equals (element.Name, name);
 			});
-			return targetElement;
 		}
 
 		public HtmlElement GetElementByClassName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			HtmlElement targetElement = null;
 			string[] classes = HtmlAPI.Split (name);
-			ForEachElement (element => {
-				HtmlAttribute attribute = element.GetAttribute (HtmlKeyword.Class);
+			HtmlAttribute attribute;
+			return GetElement (element => {
+				attribute = element.GetAttribute (HtmlKeyword.Class);
 				if (attribute is null || !HtmlAPI.Contains (classes, attribute)) {
-					return true;
+					return false;
 				}
-				targetElement = element;
-				return false;
+				return true;
 			});
-			return targetElement;
 		}
 
 		public HtmlElement GetElementByName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			HtmlElement targetElement = null;
-			ForEachElement (element => {
-				if (HtmlAPI.Equals (element.GetAttributeValue (nameof (name)), name)) {
-					targetElement = element;
+			return GetElement (element => {
+				return HtmlAPI.Equals (element.GetAttributeValue (HtmlKeyword.Name), name);
+			});
+		}
+
+		public HtmlElement GetElementByAttribute (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlAttribute attribute;
+			return GetElement (element => {
+				attribute = element.GetAttribute (name);
+				if (attribute is null) {
 					return false;
 				}
 				return true;
 			});
-			return targetElement;
+		}
+		public HtmlElement GetElementByAttribute (string name, string value) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return GetElement (element => {
+				return HtmlAPI.Equals (element.GetAttributeValue (name), value);
+			});
 		}
 
 		public HtmlElement[] GetElementsByTagName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			ForEachElement (element => {
-				if (HtmlAPI.Equals (element.Name, name)) {
-					elements.Add (element);
-				}
-				return true;
+			return GetElements (element => {
+				return HtmlAPI.Equals (element.Name, name);
 			});
-			return elements.ToArray ();
 		}
 
 		public HtmlElement[] GetElementsByClassName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
 			string[] classes = HtmlAPI.Split (name);
-			ForEachElement (element => {
-				HtmlAttribute attribute = element.GetAttribute (HtmlKeyword.Class);
+			HtmlAttribute attribute;
+			return GetElements (element => {
+				attribute = element.GetAttribute (HtmlKeyword.Class);
 				if (attribute is null || !HtmlAPI.Contains (classes, attribute)) {
-					return true;
+					return false;
 				}
-				elements.Add (element);
 				return true;
 			});
-			return elements.ToArray ();
 		}
 
 		public HtmlElement[] GetElementsByName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			ForEachElement (element => {
-				if (HtmlAPI.Equals (element.GetAttributeValue (nameof (name)), name)) {
-					elements.Add (element);
+			return GetElements (element => {
+				return HtmlAPI.Equals (element.GetAttributeValue (HtmlKeyword.Name), name);
+			});
+		}
+
+		public HtmlElement[] GetElementsByAttribute (string name) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlAttribute attribute;
+			return GetElements (element => {
+				attribute = element.GetAttribute (name);
+				if (attribute is null) {
+					return false;
 				}
 				return true;
 			});
-			return elements.ToArray ();
+		}
+		public HtmlElement[] GetElementsByAttribute (string name, string value) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return GetElements (element => {
+				return HtmlAPI.Equals (element.GetAttributeValue (name), value);
+			});
 		}
 
 		public bool ForEachElement (HtmlFunc<HtmlElement, bool> func) {
@@ -294,6 +328,18 @@ namespace Eruru.Html {
 				}
 			}
 			return true;
+		}
+
+		#endregion
+
+		#region IEnumerable<HtmlElement>
+
+		public IEnumerator<HtmlElement> GetEnumerator () {
+			return Elements.GetEnumerator ();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator () {
+			return Elements.GetEnumerator ();
 		}
 
 		#endregion

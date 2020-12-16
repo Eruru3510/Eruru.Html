@@ -57,13 +57,7 @@ namespace Eruru.Html {
 		}
 
 		public static bool Equals (string a, string b) {
-			if (a is null) {
-				throw new ArgumentNullException (nameof (a));
-			}
-			if (b is null) {
-				throw new ArgumentNullException (nameof (b));
-			}
-			return a.Equals (b, StringComparison.CurrentCultureIgnoreCase);
+			return string.Equals (a, b, StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		public static HtmlElementType TagTypeToElementType (HtmlTagType type) {

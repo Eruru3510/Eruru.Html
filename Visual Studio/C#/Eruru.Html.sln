@@ -11,12 +11,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "Windows
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html_For_.NET_Framework_2.0", "Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj", "{2C64C437-677A-4041-87FC-9F672625F293}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.TextTokenizer For Shared Project", "..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.shproj", "{3AC244E4-BFAB-4BE8-97BA-CC0893E71E99}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{07bfa67f-39bc-47fa-b893-48a3f9e88738}*SharedItemsImports = 13
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{2c64c437-677a-4041-87fc-9f672625f293}*SharedItemsImports = 4
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{363a08ac-8731-42b4-aaf6-9a65083313f4}*SharedItemsImports = 4
+		..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.projitems*{3ac244e4-bfab-4be8-97ba-cc0893e71e99}*SharedItemsImports = 13
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{879a7502-77a5-4321-9930-320de8e02694}*SharedItemsImports = 4
+		..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.projitems*{879a7502-77a5-4321-9930-320de8e02694}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

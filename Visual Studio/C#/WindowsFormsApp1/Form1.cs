@@ -6,8 +6,6 @@ namespace WindowsFormsApp1 {
 
 	public partial class Form1 : Form {
 
-		Html Html = new Html ();
-
 		public Form1 () {
 			InitializeComponent ();
 		}
@@ -16,15 +14,16 @@ namespace WindowsFormsApp1 {
 			Parse ();
 		}
 
-		private void textBox1_TextChanged (object sender, EventArgs e) {
+		private void TextBox_Input_TextChanged (object sender, EventArgs e) {
 			Parse ();
 		}
 
 		void Parse () {
 			try {
-				textBox2.Text = Html.Parse (textBox1.Text).InnerHtml;
+				Html html = Html.Parse (TextBox_Input.Text);
+				TextBox_Output.Text = html.InnerHtml;
 			} catch (Exception exception) {
-				textBox2.Text = exception.ToString ();
+				TextBox_Output.Text = exception.ToString ();
 			}
 		}
 
