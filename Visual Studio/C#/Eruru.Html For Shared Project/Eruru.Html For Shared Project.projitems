@@ -10,12 +10,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Html.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlElementType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlKeyword.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlNotSupportException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlSelectorReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReader.cs" />

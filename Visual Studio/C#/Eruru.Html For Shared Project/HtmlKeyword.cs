@@ -4,6 +4,8 @@
 
 		public const char LeftAngleBracket = '<';
 		public const char RightAngleBracket = '>';
+		public const char LeftBracket = '[';
+		public const char RightBracket = ']';
 		public const char ExclamationMark = '!';
 		public const char EqualSign = '=';
 		public const char MinusSign = '-';
@@ -11,6 +13,9 @@
 		public const char Slash = '/';
 		public const char SingleQuot = '\'';
 		public const char DoubleQuot = '"';
+		public const char NumberSign = '#';
+		public const char Dot = '.';
+		public const char Comma = ',';
 		public const char Backslash = '\\';
 		public const string CommentHead = "<!--";
 		public const string CommentTail = "-->";

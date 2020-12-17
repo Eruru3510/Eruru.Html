@@ -7,7 +7,7 @@ namespace Eruru.Html {
 
 	public delegate TResult HtmlFunc<in T, out TResult> (T arg);
 
-	static class HtmlAPI {
+	static class HtmlApi {
 
 		static readonly BindingFlags BindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		static readonly KeyValuePair<char, char>[] Escapes = new KeyValuePair<char, char>[] {
@@ -33,8 +33,8 @@ namespace Eruru.Html {
 			if (instance is null) {
 				throw new ArgumentNullException (nameof (instance));
 			}
-			if (message is null) {
-				throw new ArgumentNullException (nameof (message));
+			if (IsNullOrWhiteSpace (message)) {
+				throw new ArgumentException ($"“{nameof (message)}”不能为 Null 或空白", nameof (message));
 			}
 			typeof (Exception).GetField ("_message", BindingFlags).SetValue (instance, message);
 		}
@@ -100,6 +100,21 @@ namespace Eruru.Html {
 		public static bool Contains (string[] a, HtmlAttribute b) {
 			for (int i = 0; i < a.Length; i++) {
 				if (!b.Values.Contains (a[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool IsNullOrWhiteSpace (string text) {
+			if (text is null) {
+				return true;
+			}
+			if (text.Length == 0) {
+				return true;
+			}
+			foreach (char character in text) {
+				if (!char.IsWhiteSpace (character)) {
 					return false;
 				}
 			}

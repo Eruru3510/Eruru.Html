@@ -18,16 +18,17 @@ namespace Eruru.Html {
 				switch (Current.Type) {
 					case HtmlTagType.Define:
 					case HtmlTagType.Single:
-						element = new HtmlElement (Current.Name, HtmlAPI.TagTypeToElementType (Current.Type), Current.Attributes);
+						element = new HtmlElement (Current.Name, HtmlApi.TagTypeToElementType (Current.Type), Current.Attributes);
 						return true;
 					case HtmlTagType.Start:
-						element = new HtmlElement (Current.Name, HtmlAPI.TagTypeToElementType (Current.Type), Current.Attributes);
-						if (Array.Exists (ContentTags, tagName => HtmlAPI.Equals (tagName, Current.Name))) {
-							string content = ReadContent ($"</{element.Name}>");
+						element = new HtmlElement (Current.Name, HtmlApi.TagTypeToElementType (Current.Type), Current.Attributes);
+						if (Array.Exists (ContentTags, tagName => HtmlApi.Equals (tagName, Current.Name))) {
+							TextTokenizer.SkipWhiteSpace ();
+							string content = TextTokenizer.ReadTo ($"</{element.Name}>").TrimEnd ();
 							if (content.Length > 0) {
 								element.Elements.Add (new HtmlElement (HtmlElementType.Text, content));
 							}
-							Read ();
+							TextTokenizer.Read ();
 							return true;
 						}
 						while (ReadElement (out HtmlElement childElement, element.Name, name)) {
@@ -39,7 +40,7 @@ namespace Eruru.Html {
 						return true;
 					case HtmlTagType.End:
 						if (name != null && Current.Name != name) {
-							if (parentName != null && HtmlAPI.Equals (Current.Name, parentName)) {
+							if (parentName != null && HtmlApi.Equals (Current.Name, parentName)) {
 								//Console.WriteLine ($"标签不配对，{name}没有结束标签");
 								element = null;
 								return false;
@@ -52,7 +53,7 @@ namespace Eruru.Html {
 						return false;
 					case HtmlTagType.Text:
 					case HtmlTagType.Comment:
-						element = new HtmlElement (HtmlAPI.TagTypeToElementType (Current.Type), Current.Content);
+						element = new HtmlElement (HtmlApi.TagTypeToElementType (Current.Type), Current.Content);
 						return true;
 				}
 			}

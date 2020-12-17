@@ -70,6 +70,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <Import Project="..\Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj">
+      <Project>{2c64c437-677a-4041-87fc-9f672625f293}</Project>
+      <Name>Eruru.Html_For_.NET_Framework_2.0</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

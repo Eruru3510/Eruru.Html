@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Eruru.Html {
@@ -14,24 +15,20 @@ namespace Eruru.Html {
 			if (text is null) {
 				throw new ArgumentNullException (nameof (text));
 			}
-			return Build (new StringReader (text));
+			return Load (new StringReader (text));
 		}
 
 		public static Html Load (string path) {
 			if (path is null) {
 				throw new ArgumentNullException (nameof (path));
 			}
-			return Build (new StreamReader (path));
+			return Load (new StreamReader (path));
 		}
 
 		public static Html Load (TextReader textReader) {
 			if (textReader is null) {
 				throw new ArgumentNullException (nameof (textReader));
 			}
-			return Build (textReader);
-		}
-
-		static Html Build (TextReader textReader) {
 			Html html = new Html ();
 			using (HtmlTagReader reader = new HtmlTagReader (textReader)) {
 				while (reader.ReadElement (out HtmlElement element)) {
@@ -52,6 +49,12 @@ namespace Eruru.Html {
 		public string InnerHtml {
 
 			get => Root.InnerHtml;
+
+		}
+
+		public string InnerText {
+
+			get => Root.InnerText;
 
 		}
 
@@ -105,34 +108,34 @@ namespace Eruru.Html {
 			return Root.GetElementByAttribute (name, value);
 		}
 
-		public HtmlElement[] GetElementsByTagName (string name) {
+		public List<HtmlElement> GetElementsByTagName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return Root.GetElementsByTagName (name);
 		}
 
-		public HtmlElement[] GetElementsByClassName (string name) {
+		public List<HtmlElement> GetElementsByClassName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return Root.GetElementsByClassName (name);
 		}
 
-		public HtmlElement[] GetElementsByName (string name) {
+		public List<HtmlElement> GetElementsByName (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return Root.GetElementsByName (name);
 		}
 
-		public HtmlElement[] GetElementsByAttribute (string name) {
+		public List<HtmlElement> GetElementsByAttribute (string name) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return Root.GetElementsByAttribute (name);
 		}
-		public HtmlElement[] GetElementsByAttribute (string name, string value) {
+		public List<HtmlElement> GetElementsByAttribute (string name, string value) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -142,11 +145,32 @@ namespace Eruru.Html {
 			return Root.GetElementsByAttribute (name, value);
 		}
 
-		public bool ForEachElement (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachNode (HtmlFunc<HtmlElement, bool> func) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
-			return Root.ForEachElement (func);
+			Root.ForEachNode (func);
+		}
+
+		public void ForEachTextNode (HtmlFunc<HtmlElement, bool> func) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			Root.ForEachTextNode (func);
+		}
+
+		public void ForEachElement (HtmlFunc<HtmlElement, bool> func) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			Root.ForEachElement (func);
+		}
+
+		public List<HtmlElement> QuerySelectorAll (string text) {
+			if (text is null) {
+				throw new ArgumentNullException (nameof (text));
+			}
+			return Root.QuerySelectorAll (text);
 		}
 
 		#endregion

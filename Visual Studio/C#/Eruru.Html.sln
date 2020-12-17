@@ -5,28 +5,29 @@ VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.Html For Shared Project", "Eruru.Html For Shared Project\Eruru.Html For Shared Project.shproj", "{07BFA67F-39BC-47FA-B893-48A3F9E88738}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html_For_.NET_Framework_2.0", "Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj", "{2C64C437-677A-4041-87FC-9F672625F293}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{879A7502-77A5-4321-9930-320DE8E02694}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{363A08AC-8731-42B4-AAF6-9A65083313F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html_For_.NET_Framework_2.0", "Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj", "{2C64C437-677A-4041-87FC-9F672625F293}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.TextTokenizer For Shared Project", "..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.shproj", "{3AC244E4-BFAB-4BE8-97BA-CC0893E71E99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html_For_.NET_Standard_2.0", "Eruru.Html For .NET Standard 2.0\Eruru.Html_For_.NET_Standard_2.0.csproj", "{AA893EEE-7E90-453A-9BC0-7E39406B4193}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{07bfa67f-39bc-47fa-b893-48a3f9e88738}*SharedItemsImports = 13
 		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{2c64c437-677a-4041-87fc-9f672625f293}*SharedItemsImports = 4
-		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{363a08ac-8731-42b4-aaf6-9a65083313f4}*SharedItemsImports = 4
-		..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.projitems*{3ac244e4-bfab-4be8-97ba-cc0893e71e99}*SharedItemsImports = 13
-		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{879a7502-77a5-4321-9930-320de8e02694}*SharedItemsImports = 4
-		..\..\..\Eruru.TextTokenizer\Visual Studio\C#\Eruru.TextTokenizer For Shared Project\Eruru.TextTokenizer For Shared Project.projitems*{879a7502-77a5-4321-9930-320de8e02694}*SharedItemsImports = 4
+		Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems*{aa893eee-7e90-453a-9bc0-7e39406b4193}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.Build.0 = Release|Any CPU
 		{879A7502-77A5-4321-9930-320DE8E02694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{879A7502-77A5-4321-9930-320DE8E02694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{879A7502-77A5-4321-9930-320DE8E02694}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,10 +36,10 @@ Global
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{363A08AC-8731-42B4-AAF6-9A65083313F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C64C437-677A-4041-87FC-9F672625F293}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C64C437-677A-4041-87FC-9F672625F293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA893EEE-7E90-453A-9BC0-7E39406B4193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA893EEE-7E90-453A-9BC0-7E39406B4193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA893EEE-7E90-453A-9BC0-7E39406B4193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA893EEE-7E90-453A-9BC0-7E39406B4193}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

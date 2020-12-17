@@ -2,197 +2,118 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using Eruru.TextTokenizer;
 
 namespace Eruru.Html {
 
 	public class HtmlTextReader : IDisposable, IEnumerator<HtmlTag>, IEnumerable<HtmlTag> {
 
-		public int BufferLength { get; set; } = 500;
-
-		protected readonly Queue<int> Buffer = new Queue<int> ();
-		protected readonly TextReader TextReader;
+		protected readonly TextTokenizer<HtmlTokenType> TextTokenizer = new TextTokenizer<HtmlTokenType> (
+			HtmlTokenType.End,
+			HtmlTokenType.String,
+			HtmlTokenType.String,
+			HtmlTokenType.String,
+			HtmlTokenType.String
+		) {
+			{ HtmlKeyword.LeftAngleBracket, HtmlTokenType.LeftAngleBracket },
+			{ HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket },
+			{ HtmlKeyword.ExclamationMark, HtmlTokenType.ExclamationMark },
+			{ HtmlKeyword.Slash, HtmlTokenType.Slash },
+			{ HtmlKeyword.EqualSign, HtmlTokenType.EqualSign },
+			{ HtmlKeyword.MinusSign, HtmlTokenType.MinusSign }
+		};
 
 		readonly string[] SingleTags = { "meta", "link", "input", "img", "base", "hr", "br", "param" };
 
-		int Index;
+		HtmlTag _Current;
+		bool NeedMoveNext = true;
 
 		public HtmlTextReader (TextReader textReader) {
 			if (textReader is null) {
 				throw new ArgumentNullException (nameof (textReader));
 			}
-			TextReader = textReader;
+			TextTokenizer.TextReader = textReader;
+			TextTokenizer.AllowCharactersBlockKeyword = false;
+			TextTokenizer.KeywordEnds.Add (HtmlKeyword.EqualSign);
+			TextTokenizer.KeywordEnds.Add (HtmlKeyword.Slash);
+			TextTokenizer.KeywordEnds.Add (HtmlKeyword.RightAngleBracket);
 		}
 
-		protected int Read () {
-			while (Buffer.Count >= BufferLength) {
-				Buffer.Dequeue ();
+		string GetName () {
+			TextTokenizer.MoveNext ();
+			if (TextTokenizer.Current.Type == HtmlTokenType.String) {
+				return TextTokenizer.Current;
 			}
-			Buffer.Enqueue (TextReader.Read ());
-			Index++;
-			return Buffer.Peek ();
+			throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, "标签名");
 		}
 
-		protected string ReadContent (string end = "<") {
-			StringBuilder stringBuilder = new StringBuilder ();
-			SkipWhiteSpace ();
-			while (TextReader.Peek () > -1) {
-				char character = Peek ();
-				stringBuilder.Append (character);
-				if (Match (stringBuilder, character, end)) {
-					break;
-				}
-				Read ();
-			}
-			return stringBuilder.ToString ().TrimEnd ();
-		}
-
-		char Peek () {
-			return (char)TextReader.Peek ();
-		}
-
-		char SkipWhiteSpace () {
-			while (TextReader.Peek () > -1) {
-				char character = Peek ();
-				if (char.IsWhiteSpace (character)) {
-					Read ();
-					continue;
-				}
-				return character;
-			}
-			return Peek ();
-		}
-
-		string ReadString (char end) {
-			Read ();
-			int index = Index;
-			StringBuilder stringBuilder = new StringBuilder ();
-			while (TextReader.Peek () > -1) {
-				char character = Peek ();
-				if (character == HtmlKeyword.Backslash) {
-					stringBuilder.Append (character);
-					Read ();
-					if (TextReader.Peek () > -1) {
-						stringBuilder.Append (Peek ());
-						Read ();
-					}
-					continue;
-				}
-				if (character == end) {
-					Read ();
-					return stringBuilder.ToString ();
-				}
-				stringBuilder.Append (character);
-				Read ();
-			}
-			HtmlTag tag = new HtmlTag {
-				Type = HtmlTagType.Text,
-				Index = index,
-				Content = stringBuilder.ToString ()
-			};
-			throw new HtmlTextReaderException ("字符串没有引号结束", Buffer, tag);
-		}
-
-		string ReadValue (ref bool isSingle) {
-			StringBuilder stringBuilder = new StringBuilder ();
-			SkipWhiteSpace ();
-			while (TextReader.Peek () > -1) {
-				char character = Peek ();
-				if (char.IsWhiteSpace (character)) {
-					break;
-				}
-				switch (character) {
-					case HtmlKeyword.SingleQuot:
-					case HtmlKeyword.DoubleQuot:
-						return ReadString (character);
-					case HtmlKeyword.Slash:
-						Read ();
-						character = Peek ();
-						if (character == HtmlKeyword.RightAngleBracket) {
-							isSingle = true;
-							return stringBuilder.ToString ();
-						}
-						stringBuilder.Append (HtmlKeyword.Slash);
-						break;
-					case HtmlKeyword.EqualSign:
-					case HtmlKeyword.LeftAngleBracket:
-					case HtmlKeyword.RightAngleBracket:
-						return stringBuilder.ToString ();
-				}
-				stringBuilder.Append (character);
-				Read ();
-			}
-			return stringBuilder.ToString ();
-		}
-
-		List<HtmlAttribute> ReadAttributes (ref bool isSingle) {
+		List<HtmlAttribute> GetAttributes (ref bool isSingle) {
 			List<HtmlAttribute> attributes = new List<HtmlAttribute> ();
-			while (TextReader.Peek () >= 0) {
-				char character;
-				HtmlAttribute attribute = new HtmlAttribute (ReadValue (ref isSingle));
-				if (attribute.Name.Length == 0) {
+			TextTokenizer.MoveNext ();
+			while (true) {
+				if (IsEnd (ref isSingle)) {
 					break;
 				}
-				attributes.Add (attribute);
-				character = SkipWhiteSpace ();
-				switch (character) {
-					case HtmlKeyword.EqualSign:
-						Read ();
-						attribute.Values = new List<string> ();
-						string value = ReadValue (ref isSingle);
-						if (HtmlAPI.Equals (attribute.Name, HtmlKeyword.Class)) {
-							attribute.Values.AddRange (HtmlAPI.Split (value));
-							continue;
+				switch (TextTokenizer.Current.Type) {
+					case HtmlTokenType.String:
+						HtmlAttribute attribute = new HtmlAttribute (TextTokenizer.Current);
+						attributes.Add (attribute);
+						TextTokenizer.MoveNext ();
+						if (IsEnd (ref isSingle)) {
+							break;
 						}
-						attribute.Values.Add (value);
-						continue;
-					case HtmlKeyword.RightAngleBracket:
-						return attributes;
+						switch (TextTokenizer.Current.Type) {
+							case HtmlTokenType.EqualSign:
+								TextTokenizer.MoveNext ();
+								switch (TextTokenizer.Current.Type) {
+									case HtmlTokenType.String:
+										attribute.Values = new List<string> ();
+										if (HtmlApi.Equals (attribute.Name, HtmlKeyword.Class)) {
+											attribute.Values.AddRange (HtmlApi.Split (TextTokenizer.Current));
+										} else {
+											attribute.Values.Add (TextTokenizer.Current);
+										}
+										TextTokenizer.MoveNext ();
+										continue;
+								}
+								throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, "属性值");
+							case HtmlTokenType.String:
+								continue;
+							default:
+								throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, HtmlKeyword.EqualSign, HtmlKeyword.Slash, HtmlKeyword.RightAngleBracket);
+						}
+					default:
+						throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, "属性名", HtmlKeyword.Slash, HtmlKeyword.RightAngleBracket);
 				}
 			}
 			return attributes;
 		}
 
-		bool Match (StringBuilder stringBuilder, char character, string end) {
-			if (stringBuilder.Length < end.Length) {
-				return false;
+		bool IsEnd (ref bool isSingle) {
+			switch (TextTokenizer.Current.Type) {
+				case HtmlTokenType.Slash:
+					CheckRightAngleBracket ();
+					isSingle = true;
+					return true;
+				case HtmlTokenType.RightAngleBracket:
+					isSingle = false;
+					return true;
 			}
-			if (character != end[end.Length - 1]) {
-				return false;
-			}
-			int start = stringBuilder.Length - end.Length;
-			for (int i = 0; i < end.Length; i++) {
-				if (stringBuilder[start + i] != end[i]) {
-					return false;
-				}
-			}
-			stringBuilder.Remove (start, end.Length);
-			return true;
+			return false;
 		}
 
-		string Expectation (params object[] values) {
-			if (values is null) {
-				throw new ArgumentNullException (nameof (values));
+		void CheckRightAngleBracket () {
+			TextTokenizer.MoveNext ();
+			if (TextTokenizer.Current.Type == HtmlTokenType.RightAngleBracket) {
+				return;
 			}
-			return $"期望是{string.Join ("或", Array.ConvertAll (values, value => value.ToString ()))}";
+			throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, HtmlKeyword.RightAngleBracket);
 		}
 
 		#region IDisposable
 
 		public void Dispose () {
-			TextReader.Dispose ();
-		}
-
-		#endregion
-
-		#region IEnumerable<HtmlTag>
-
-		public IEnumerator<HtmlTag> GetEnumerator () {
-			return this;
-		}
-
-		IEnumerator IEnumerable.GetEnumerator () {
-			return this;
+			TextTokenizer.Dispose ();
 		}
 
 		#endregion
@@ -208,108 +129,98 @@ namespace Eruru.Html {
 				return _Current;
 			}
 
-		}
-
-		object IEnumerator.Current {
-
-			get => Current;
+			private set => _Current = value;
 
 		}
-		HtmlTag _Current;
-		bool NeedMoveNext = true;
+
+		object IEnumerator.Current => Current;
 
 		public bool MoveNext () {
 			NeedMoveNext = false;
-			HtmlTag tag = new HtmlTag () {
-				Type = HtmlTagType.Unknown,
-				Index = Index
+			TextTokenizer.SkipWhiteSpace ();
+			HtmlTag tag = new HtmlTag {
+				Index = TextTokenizer.Index
 			};
-			while (TextReader.Peek () > -1) {
-				char character = SkipWhiteSpace ();
-				switch (character) {
-					case HtmlKeyword.LeftAngleBracket:
-						Read ();
-						character = Peek ();
-						bool isSingle = false;
-						switch (character) {
-							case HtmlKeyword.Slash:
-								tag.Type = HtmlTagType.End;
-								Read ();
-								tag.Name = ReadValue (ref isSingle);
-								if (tag.Name.Length == 0) {
-									throw new HtmlTextReaderException (Expectation ("标签名", HtmlKeyword.MinusSign), Buffer, tag);
-								}
-								break;
-							case HtmlKeyword.ExclamationMark:
-								Read ();
-								character = Peek ();
-								if (character == HtmlKeyword.MinusSign) {
-									Read ();
-									character = Peek ();
-									if (character != HtmlKeyword.MinusSign) {
-										throw new HtmlTextReaderException (Expectation (HtmlKeyword.CommentHead), Buffer, tag);
-									}
-									Read ();
-									tag.Type = HtmlTagType.Comment;
-									tag.Content = ReadContent (HtmlKeyword.CommentTail);
-									Read ();
-									_Current = tag;
-									return true;
-								}
-								tag.Type = HtmlTagType.Define;
-								tag.Name = ReadValue (ref isSingle);
-								if (tag.Name.Length == 0) {
-									throw new HtmlTextReaderException (Expectation ("标签名"), Buffer, tag);
-								}
-								break;
-							default:
-								tag.Type = HtmlTagType.Start;
-								tag.Name = ReadValue (ref isSingle);
-								if (tag.Name.Length == 0) {
-									throw new HtmlTextReaderException (Expectation ("标签名", HtmlKeyword.ExclamationMark, HtmlKeyword.Slash), Buffer, tag);
-								}
-								break;
-						}
-						if (HtmlAPI.HasFlag (tag.Type, HtmlTagType.CanHasAttribute)) {
-							tag.Attributes = ReadAttributes (ref isSingle);
-						}
-						if (isSingle || (tag.Type == HtmlTagType.Start && Array.Exists (SingleTags, tagName => HtmlAPI.Equals (tagName, tag.Name)))) {
-							tag.Type = HtmlTagType.Single;
-						}
-						character = Peek ();
-						switch (character) {
-							case HtmlKeyword.Slash:
-								Read ();
-								character = Peek ();
-								if (character == HtmlKeyword.RightAngleBracket) {
-									tag.Type = HtmlTagType.Single;
-									_Current = tag;
-									Read ();
-									return true;
-								}
-								break;
-							case HtmlKeyword.RightAngleBracket:
-								_Current = tag;
-								Read ();
-								return true;
-						}
-						if (isSingle) {
-							throw new HtmlTextReaderException (Expectation (HtmlKeyword.RightAngleBracket), Buffer, tag);
-						}
-						throw new HtmlTextReaderException (Expectation ("属性", HtmlKeyword.Slash, HtmlKeyword.RightAngleBracket), Buffer, tag);
-					default:
-						tag.Type = HtmlTagType.Text;
-						tag.Content = ReadContent ();
-						_Current = tag;
-						return true;
-				}
+			if (TextTokenizer.Peek () == -1) {
+				tag.Type = HtmlTagType.End;
+				Current = tag;
+				return false;
 			}
-			_Current = tag;
-			return false;
+			switch (TextTokenizer.Character) {
+				case HtmlKeyword.LeftAngleBracket:
+					TextTokenizer.Read ();
+					TextTokenizer.MoveNext ();
+					switch (TextTokenizer.Current.Type) {
+						case HtmlTokenType.String: {
+							tag.Type = HtmlTagType.Start;
+							tag.Name = TextTokenizer.Current;
+							bool isSingle = false;
+							tag.Attributes = GetAttributes (ref isSingle);
+							if (isSingle == false) {
+								isSingle = Array.IndexOf (SingleTags, tag.Name) != -1;
+							}
+							if (isSingle) {
+								tag.Type = HtmlTagType.Single;
+							}
+							Current = tag;
+							return true;
+						}
+						case HtmlTokenType.ExclamationMark: {
+							TextTokenizer.MoveNext ();
+							switch (TextTokenizer.Current.Type) {
+								case HtmlTokenType.String:
+									tag.Type = HtmlTagType.Define;
+									tag.Name = TextTokenizer.Current;
+									bool isSingle = false;
+									tag.Attributes = GetAttributes (ref isSingle);
+									break;
+								case HtmlTokenType.MinusSign:
+									TextTokenizer.MoveNext ();
+									if (TextTokenizer.Current.Type != HtmlTokenType.MinusSign) {
+										throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, HtmlKeyword.MinusSign);
+									}
+									tag.Type = HtmlTagType.Comment;
+									TextTokenizer.SkipWhiteSpace ();
+									tag.Content = TextTokenizer.ReadTo (HtmlKeyword.CommentTail).TrimEnd ();
+									TextTokenizer.Read ();
+									break;
+								default:
+									throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, "标签名", HtmlKeyword.MinusSign);
+							}
+							Current = tag;
+							return true;
+						}
+						case HtmlTokenType.Slash:
+							tag.Type = HtmlTagType.End;
+							tag.Name = GetName ();
+							CheckRightAngleBracket ();
+							Current = tag;
+							return true;
+						default:
+							throw new HtmlTextReaderException<HtmlTokenType> (TextTokenizer, "标签名", HtmlKeyword.ExclamationMark, HtmlKeyword.Slash);
+					}
+				default:
+					tag.Type = HtmlTagType.Text;
+					tag.Content = TextTokenizer.ReadTo ("<", true);
+					Current = tag;
+					return true;
+			}
 		}
 
 		public void Reset () {
 			throw new Exception ($"{nameof (TextReader)}无法{nameof (Reset)}");
+		}
+
+		#endregion
+
+		#region IEnumerable<HtmlTag>
+
+		public IEnumerator<HtmlTag> GetEnumerator () {
+			throw new NotImplementedException ();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator () {
+			throw new NotImplementedException ();
 		}
 
 		#endregion
