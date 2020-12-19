@@ -44,6 +44,13 @@ namespace Eruru.Html {
 			return html;
 		}
 
+		public static implicit operator Html (string text) {
+			if (text is null) {
+				throw new ArgumentNullException (nameof (text));
+			}
+			return Html.Parse (text);
+		}
+
 		#region IHtmlElement
 
 		public string InnerHtml {
@@ -51,126 +58,131 @@ namespace Eruru.Html {
 			get => Root.InnerHtml;
 
 		}
-
 		public string InnerText {
 
 			get => Root.InnerText;
 
 		}
-
 		public HtmlElement this[int index] {
 
 			get => Root[index];
 
 		}
 
-		public HtmlElement GetElementById (string id) {
+		public HtmlElement GetElementById (string id, int maxDepth = -1) {
 			if (id is null) {
 				throw new ArgumentNullException (nameof (id));
 			}
-			return Root.GetElementById (id);
+			return Root.GetElementById (id, maxDepth);
 		}
 
-		public HtmlElement GetElementByTagName (string name) {
+		public HtmlElement GetElementByTagName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Root.GetElementByTagName (name);
+			return Root.GetElementByTagName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByClassName (string name) {
+		public HtmlElement GetElementByClassName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Root.GetElementByClassName (name);
+			return Root.GetElementByClassName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByName (string name) {
+		public HtmlElement GetElementByName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Root.GetElementByName (name);
+			return Root.GetElementByName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByAttribute (string name) {
+		public HtmlElement GetElementByAttribute (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Root.GetElementByAttribute (name);
+			return Root.GetElementByAttribute (name, maxDepth);
 		}
-		public HtmlElement GetElementByAttribute (string name, string value) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			if (value is null) {
-				throw new ArgumentNullException (nameof (value));
-			}
-			return Root.GetElementByAttribute (name, value);
-		}
-
-		public List<HtmlElement> GetElementsByTagName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			return Root.GetElementsByTagName (name);
-		}
-
-		public List<HtmlElement> GetElementsByClassName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			return Root.GetElementsByClassName (name);
-		}
-
-		public List<HtmlElement> GetElementsByName (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			return Root.GetElementsByName (name);
-		}
-
-		public List<HtmlElement> GetElementsByAttribute (string name) {
-			if (name is null) {
-				throw new ArgumentNullException (nameof (name));
-			}
-			return Root.GetElementsByAttribute (name);
-		}
-		public List<HtmlElement> GetElementsByAttribute (string name, string value) {
+		public HtmlElement GetElementByAttribute (string name, string value, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			if (value is null) {
 				throw new ArgumentNullException (nameof (value));
 			}
-			return Root.GetElementsByAttribute (name, value);
+			return Root.GetElementByAttribute (name, value, maxDepth);
 		}
 
-		public void ForEachNode (HtmlFunc<HtmlElement, bool> func) {
+		public List<HtmlElement> GetElementsByTagName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementsByTagName (name, maxDepth);
+		}
+
+		public List<HtmlElement> GetElementsByClassName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementsByClassName (name, maxDepth);
+		}
+
+		public List<HtmlElement> GetElementsByName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementsByName (name, maxDepth);
+		}
+
+		public List<HtmlElement> GetElementsByAttribute (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return Root.GetElementsByAttribute (name, maxDepth);
+		}
+		public List<HtmlElement> GetElementsByAttribute (string name, string value, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return Root.GetElementsByAttribute (name, value, maxDepth);
+		}
+
+		public void ForEachNode (HtmlFunc<HtmlElement, bool> func, int maxDepth = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
-			Root.ForEachNode (func);
+			Root.ForEachNode (func, maxDepth);
 		}
 
-		public void ForEachTextNode (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachTextNode (HtmlFunc<HtmlElement, bool> func, int maxDepth = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
-			Root.ForEachTextNode (func);
+			Root.ForEachTextNode (func, maxDepth);
 		}
 
-		public void ForEachElement (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachElement (HtmlFunc<HtmlElement, bool> func, int maxDepth = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
-			Root.ForEachElement (func);
+			Root.ForEachElement (func, maxDepth);
 		}
 
-		public List<HtmlElement> QuerySelectorAll (string text) {
-			if (text is null) {
-				throw new ArgumentNullException (nameof (text));
+		public HtmlElement QuerySelector (string path) {
+			if (HtmlApi.IsNullOrWhiteSpace (path)) {
+				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
 			}
-			return Root.QuerySelectorAll (text);
+			return Root.QuerySelector (path);
+		}
+
+		public List<HtmlElement> QuerySelectorAll (string path) {
+			if (HtmlApi.IsNullOrWhiteSpace (path)) {
+				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			}
+			return Root.QuerySelectorAll (path);
 		}
 
 		#endregion

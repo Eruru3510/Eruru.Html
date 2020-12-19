@@ -21,7 +21,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReaderException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlToken.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTokenType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHtmlElement.cs" />

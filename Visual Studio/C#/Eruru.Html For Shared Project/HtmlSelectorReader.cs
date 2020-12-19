@@ -23,6 +23,7 @@ namespace Eruru.Html {
 			Add (HtmlKeyword.Dot, HtmlTokenType.Dot);
 			Add (HtmlKeyword.LeftBracket, HtmlTokenType.LeftBracket);
 			Add (HtmlKeyword.RightBracket, HtmlTokenType.RightBracket);
+			Add (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
 		}
 
 	}

@@ -9,24 +9,16 @@ namespace ConsoleApp1 {
 		static void Main (string[] args) {
 			Console.Title = nameof (ConsoleApp1);
 			Html html = Html.Load (@"D:\1.html");
-			foreach (HtmlElement element in html.QuerySelectorAll (".tbox .ssbox .title a,ul[class=links] li")) {
-				Console.WriteLine (element.InnerText);
+			foreach (HtmlElement element in html.QuerySelectorAll (".tbox .ssbox")) {
+				HtmlElement titleA = element.QuerySelector (".title a");
+				HtmlElement sbarA = element.QuerySelector (".sbar a");
+				if (titleA is null || sbarA is null) {
+					continue;
+				}
+				Console.WriteLine ($"{titleA.InnerText}\t{titleA.GetAttributeValue ("href")}\t{sbarA.GetAttributeValue ("href")}");
 			}
-			Test ();
 			TestZhiHu ();
 			Console.ReadLine ();
-		}
-
-		static void Test () {
-			Html html = Html.Load (@"D:\1.html");
-			List<HtmlElement> tboxes = html.GetElementsByAttribute ("class", "tbox");
-			List<HtmlElement> ssboxes = tboxes[1].GetElementsByClassName ("ssbox");
-			foreach (HtmlElement ssbox in ssboxes) {
-				HtmlElement title = ssbox.GetElementByClassName ("title");
-				HtmlElement sbar = ssbox.GetElementByClassName ("sbar");
-				Console.WriteLine (title.GetElementByTagName ("a").GetAttributeValue ("href"));
-				Console.WriteLine (sbar.GetElementByTagName ("a").GetAttributeValue ("href"));
-			}
 		}
 
 		static void TestZhiHu () {

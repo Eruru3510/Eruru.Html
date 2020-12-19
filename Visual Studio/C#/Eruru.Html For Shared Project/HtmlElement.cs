@@ -158,7 +158,7 @@ namespace Eruru.Html {
 			return stringBuilder;
 		}
 
-		HtmlElement GetElement (HtmlFunc<HtmlElement, bool> func) {
+		HtmlElement GetElement (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -169,11 +169,11 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 			return targetElement;
 		}
 
-		List<HtmlElement> GetElements (HtmlFunc<HtmlElement, bool> func) {
+		List<HtmlElement> GetElements (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -183,11 +183,11 @@ namespace Eruru.Html {
 					elements.Add (element);
 				}
 				return true;
-			});
+			}, maxDepath);
 			return elements;
 		}
 
-		bool ForEach (HtmlFunc<HtmlElement, bool> func) {
+		bool ForEach (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -198,8 +198,10 @@ namespace Eruru.Html {
 				if (!func (element)) {
 					return false;
 				}
-				if (!element.ForEach (func)) {
-					return false;
+				if (maxDepath < 0 || maxDepath > 0) {
+					if (!element.ForEach (func, maxDepath - 1)) {
+						return false;
+					}
 				}
 			}
 			return true;
@@ -212,38 +214,36 @@ namespace Eruru.Html {
 			get => Serialize (false).ToString ();
 
 		}
-
 		public string InnerText {
 
 			get => SerializeTextNode ().ToString ();
 
 		}
-
 		public HtmlElement this[int index] {
 
 			get => Elements[index];
 
 		}
 
-		public HtmlElement GetElementById (string id) {
+		public HtmlElement GetElementById (string id, int maxDepath = -1) {
 			if (id is null) {
 				throw new ArgumentNullException (nameof (id));
 			}
 			return GetElement (element => {
 				return HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.ID), id);
-			});
+			}, maxDepath);
 		}
 
-		public HtmlElement GetElementByTagName (string name) {
+		public HtmlElement GetElementByTagName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return GetElement (element => {
 				return HtmlApi.Equals (element.Name, name);
-			});
+			}, maxDepath);
 		}
 
-		public HtmlElement GetElementByClassName (string name) {
+		public HtmlElement GetElementByClassName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -255,19 +255,19 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
 
-		public HtmlElement GetElementByName (string name) {
+		public HtmlElement GetElementByName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return GetElement (element => {
 				return HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.Name), name);
-			});
+			}, maxDepath);
 		}
 
-		public HtmlElement GetElementByAttribute (string name) {
+		public HtmlElement GetElementByAttribute (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -278,9 +278,9 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
-		public HtmlElement GetElementByAttribute (string name, string value) {
+		public HtmlElement GetElementByAttribute (string name, string value, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -289,19 +289,19 @@ namespace Eruru.Html {
 			}
 			return GetElement (element => {
 				return HtmlApi.Equals (element.GetAttributeValue (name), value);
-			});
+			}, maxDepath);
 		}
 
-		public List<HtmlElement> GetElementsByTagName (string name) {
+		public List<HtmlElement> GetElementsByTagName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return GetElements (element => {
 				return HtmlApi.Equals (element.Name, name);
-			});
+			}, maxDepath);
 		}
 
-		public List<HtmlElement> GetElementsByClassName (string name) {
+		public List<HtmlElement> GetElementsByClassName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -313,19 +313,19 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
 
-		public List<HtmlElement> GetElementsByName (string name) {
+		public List<HtmlElement> GetElementsByName (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
 			return GetElements (element => {
 				return HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.Name), name);
-			});
+			}, maxDepath);
 		}
 
-		public List<HtmlElement> GetElementsByAttribute (string name) {
+		public List<HtmlElement> GetElementsByAttribute (string name, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -336,9 +336,9 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
-		public List<HtmlElement> GetElementsByAttribute (string name, string value) {
+		public List<HtmlElement> GetElementsByAttribute (string name, string value, int maxDepath = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
@@ -347,10 +347,10 @@ namespace Eruru.Html {
 			}
 			return GetElements (element => {
 				return HtmlApi.Equals (element.GetAttributeValue (name), value);
-			});
+			}, maxDepath);
 		}
 
-		public void ForEachNode (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachNode (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -359,10 +359,10 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
 
-		public void ForEachTextNode (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachTextNode (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -374,10 +374,10 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
 
-		public void ForEachElement (HtmlFunc<HtmlElement, bool> func) {
+		public void ForEachElement (HtmlFunc<HtmlElement, bool> func, int maxDepath = -1) {
 			if (func is null) {
 				throw new ArgumentNullException (nameof (func));
 			}
@@ -389,24 +389,36 @@ namespace Eruru.Html {
 					return false;
 				}
 				return true;
-			});
+			}, maxDepath);
 		}
 
-		public List<HtmlElement> QuerySelectorAll (string text) {
+		public HtmlElement QuerySelector (string path) {
+			if (HtmlApi.IsNullOrWhiteSpace (path)) {
+				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			}
+			List<HtmlElement> elements = QuerySelectorAll (path);
+			return elements.Count == 0 ? null : elements[0];
+		}
+
+		public List<HtmlElement> QuerySelectorAll (string path) {
+			if (HtmlApi.IsNullOrWhiteSpace (path)) {
+				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			}
 			HtmlElement root = this;
 			List<HtmlElement> elements = new List<HtmlElement> ();
 			List<HtmlElement> targetElements = new List<HtmlElement> ();
-			List<HtmlElement> childElements = new List<HtmlElement> ();
+			List<HtmlElement> tempElements = new List<HtmlElement> ();
 			targetElements.Add (root);
 			bool isChild = true;
-			using (HtmlSelectorReader reader = new HtmlSelectorReader (new StringReader (text))) {
+			int depth = -1;
+			using (HtmlSelectorReader reader = new HtmlSelectorReader (new StringReader (path))) {
 				while (reader.MoveNext ()) {
 					switch (reader.Current.Type) {
 						case HtmlTokenType.Dot: {
 							reader.MoveNext ();
 							string name = reader.Current;
 							if (isChild) {
-								QuerySelectorAll (element => element.GetElementsByClassName (name));
+								QuerySelectorAll (element => element.GetElementsByClassName (name, depth));
 								break;
 							}
 							Filter (element => element.ClassList.Contains (name));
@@ -416,7 +428,7 @@ namespace Eruru.Html {
 							reader.MoveNext ();
 							string name = reader.Current;
 							if (isChild) {
-								QuerySelectorAll (element => element.GetElementsByClassName (name));
+								QuerySelectorAll (element => element.GetElementsByClassName (name, depth));
 								break;
 							}
 							Filter (element => HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.ID), name));
@@ -430,7 +442,7 @@ namespace Eruru.Html {
 						}
 						case HtmlTokenType.String: {
 							string name = reader.Current;
-							QuerySelectorAll (element => element.GetElementsByTagName (name));
+							QuerySelectorAll (element => element.GetElementsByTagName (name, depth));
 							break;
 						}
 						case HtmlTokenType.LeftBracket: {
@@ -451,6 +463,12 @@ namespace Eruru.Html {
 							break;
 						}
 					}
+					depth = -1;
+					switch (reader.Current.Type) {
+						case HtmlTokenType.RightAngleBracket:
+							depth = 0;
+							break;
+					}
 					isChild = false;
 					if (char.IsWhiteSpace ((char)reader.Peek ())) {
 						isChild = true;
@@ -463,14 +481,13 @@ namespace Eruru.Html {
 				if (func is null) {
 					throw new ArgumentNullException (nameof (func));
 				}
-				childElements.Clear ();
+				tempElements.Clear ();
 				foreach (HtmlElement element in targetElements) {
-					childElements.AddRange (func (element));
+					tempElements.AddRange (func (element));
 				}
 				targetElements.Clear ();
-				targetElements.AddRange (childElements);
+				targetElements.AddRange (tempElements);
 			}
-
 			void Filter (HtmlFunc<HtmlElement, bool> func) {
 				if (func is null) {
 					throw new ArgumentNullException (nameof (func));
