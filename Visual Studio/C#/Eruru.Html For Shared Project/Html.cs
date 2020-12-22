@@ -172,15 +172,15 @@ namespace Eruru.Html {
 		}
 
 		public HtmlElement QuerySelector (string path) {
-			if (HtmlApi.IsNullOrWhiteSpace (path)) {
-				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
 			}
 			return Root.QuerySelector (path);
 		}
 
 		public List<HtmlElement> QuerySelectorAll (string path) {
-			if (HtmlApi.IsNullOrWhiteSpace (path)) {
-				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
 			}
 			return Root.QuerySelectorAll (path);
 		}

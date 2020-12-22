@@ -33,10 +33,10 @@ namespace Eruru.Html {
 				throw new ArgumentNullException (nameof (textReader));
 			}
 			TextTokenizer.TextReader = textReader;
-			TextTokenizer.AllowCharactersBlockKeyword = false;
-			TextTokenizer.KeywordEnds.Add (HtmlKeyword.EqualSign);
-			TextTokenizer.KeywordEnds.Add (HtmlKeyword.Slash);
-			TextTokenizer.KeywordEnds.Add (HtmlKeyword.RightAngleBracket);
+			TextTokenizer.AllowCharactersBreakKeyword = false;
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.EqualSign);
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.Slash);
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.RightAngleBracket);
 		}
 
 		string GetName () {

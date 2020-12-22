@@ -7,8 +7,11 @@ namespace Eruru.Html {
 	public class HtmlTextReaderException<T> : Exception where T : Enum {
 
 		public HtmlTextReaderException (string message, TextTokenizer<T> textTokenizer) {
-			if (HtmlApi.IsNullOrWhiteSpace (message)) {
-				throw new ArgumentException ($"“{nameof (message)}”不能为 Null 或空白", nameof (message));
+			if (message is null) {
+				throw new ArgumentNullException (nameof (message));
+			}
+			if (textTokenizer is null) {
+				throw new ArgumentNullException (nameof (textTokenizer));
 			}
 			StringBuilder stringBuilder = new StringBuilder ();
 			stringBuilder.AppendLine (message);
@@ -25,6 +28,9 @@ namespace Eruru.Html {
 			$"期望是{string.Join ("或", Array.ConvertAll (values, value => value.ToString ()))}",
 			textTokenizer
 		) {
+			if (textTokenizer is null) {
+				throw new ArgumentNullException (nameof (textTokenizer));
+			}
 			if (values is null) {
 				throw new ArgumentNullException (nameof (values));
 			}

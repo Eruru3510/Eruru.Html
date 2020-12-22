@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Eruru.Html {
@@ -393,110 +392,20 @@ namespace Eruru.Html {
 		}
 
 		public HtmlElement QuerySelector (string path) {
-			if (HtmlApi.IsNullOrWhiteSpace (path)) {
-				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
 			}
-			List<HtmlElement> elements = QuerySelectorAll (path);
-			return elements.Count == 0 ? null : elements[0];
+			using (HtmlSelector selector = new HtmlSelector (this)) {
+				return selector.QuerySelector (path);
+			}
 		}
 
 		public List<HtmlElement> QuerySelectorAll (string path) {
-			if (HtmlApi.IsNullOrWhiteSpace (path)) {
-				throw new ArgumentException ($"“{nameof (path)}”不能为 Null 或空白", nameof (path));
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
 			}
-			HtmlElement root = this;
-			List<HtmlElement> elements = new List<HtmlElement> ();
-			List<HtmlElement> targetElements = new List<HtmlElement> ();
-			List<HtmlElement> tempElements = new List<HtmlElement> ();
-			targetElements.Add (root);
-			bool isChild = true;
-			int depth = -1;
-			using (HtmlSelectorReader reader = new HtmlSelectorReader (new StringReader (path))) {
-				while (reader.MoveNext ()) {
-					switch (reader.Current.Type) {
-						case HtmlTokenType.Dot: {
-							reader.MoveNext ();
-							string name = reader.Current;
-							if (isChild) {
-								QuerySelectorAll (element => element.GetElementsByClassName (name, depth));
-								break;
-							}
-							Filter (element => element.ClassList.Contains (name));
-							break;
-						}
-						case HtmlTokenType.NumberSign: {
-							reader.MoveNext ();
-							string name = reader.Current;
-							if (isChild) {
-								QuerySelectorAll (element => element.GetElementsByClassName (name, depth));
-								break;
-							}
-							Filter (element => HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.ID), name));
-							break;
-						}
-						case HtmlTokenType.Comma: {
-							elements.AddRange (targetElements);
-							targetElements.Clear ();
-							targetElements.Add (root);
-							break;
-						}
-						case HtmlTokenType.String: {
-							string name = reader.Current;
-							QuerySelectorAll (element => element.GetElementsByTagName (name, depth));
-							break;
-						}
-						case HtmlTokenType.LeftBracket: {
-							reader.MoveNext ();
-							string name = reader.Current;
-							reader.MoveNext ();
-							switch (reader.Current.Type) {
-								case HtmlTokenType.EqualSign:
-									reader.MoveNext ();
-									string value = reader.Current;
-									Filter (element => HtmlApi.Equals (element.GetAttributeValue (name), value));
-									reader.MoveNext ();
-									break;
-								case HtmlTokenType.RightBracket:
-									Filter (element => element.GetAttribute (name) != null);
-									break;
-							}
-							break;
-						}
-					}
-					depth = -1;
-					switch (reader.Current.Type) {
-						case HtmlTokenType.RightAngleBracket:
-							depth = 0;
-							break;
-					}
-					isChild = false;
-					if (char.IsWhiteSpace ((char)reader.Peek ())) {
-						isChild = true;
-					}
-				}
-				elements.AddRange (targetElements);
-				return elements;
-			}
-			void QuerySelectorAll (HtmlFunc<HtmlElement, List<HtmlElement>> func) {
-				if (func is null) {
-					throw new ArgumentNullException (nameof (func));
-				}
-				tempElements.Clear ();
-				foreach (HtmlElement element in targetElements) {
-					tempElements.AddRange (func (element));
-				}
-				targetElements.Clear ();
-				targetElements.AddRange (tempElements);
-			}
-			void Filter (HtmlFunc<HtmlElement, bool> func) {
-				if (func is null) {
-					throw new ArgumentNullException (nameof (func));
-				}
-				for (int i = 0; i < targetElements.Count; i++) {
-					if (!func (targetElements[i])) {
-						targetElements.RemoveAt (i--);
-					}
-				}
+			using (HtmlSelector selector = new HtmlSelector (this)) {
+				return selector.QuerySelectorAll (path);
 			}
 		}
 

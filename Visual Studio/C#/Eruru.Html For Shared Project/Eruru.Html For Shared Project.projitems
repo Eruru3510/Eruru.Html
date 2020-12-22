@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HtmlElementType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlKeyword.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlNotSupportException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlSelectorReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReader.cs" />
