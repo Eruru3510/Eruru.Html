@@ -17,7 +17,7 @@ namespace Eruru.Html {
 			stringBuilder.AppendLine (message);
 			stringBuilder.AppendLine (
 				$"类型：{textTokenizer.Current.Type} " +
-				$"位置：{textTokenizer.Current.Index} " +
+				$"位置：{textTokenizer.Current.StartIndex} " +
 				$"长度：{textTokenizer.Current.Length} " +
 				$"值：{textTokenizer.Current.Value}"
 			);

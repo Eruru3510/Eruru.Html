@@ -17,8 +17,11 @@
 		public const char Dot = '.';
 		public const char Comma = ',';
 		public const char Backslash = '\\';
-		public const string CommentHead = "<!--";
-		public const string CommentTail = "-->";
+		public const string DefineTag = "<!";
+		public const string SingleTag = "/>";
+		public const string EndTag = "</";
+		public const string BlockCommentHead = "<!--";
+		public const string BlockCommentTail = "-->";
 		public const string Class = "class";
 		public const string ID = "id";
 		public const string Name = "name";

@@ -7,7 +7,7 @@ namespace Eruru.Html {
 
 	public class HtmlSelector : TextTokenizer<HtmlTokenType> {
 
-		HtmlElement Root;
+		readonly HtmlElement Root;
 
 		public HtmlSelector (HtmlElement root) : base (
 			HtmlTokenType.End,
@@ -17,13 +17,13 @@ namespace Eruru.Html {
 			HtmlTokenType.String
 		) {
 			Root = root ?? throw new ArgumentNullException (nameof (root));
-			Add (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
-			Add (HtmlKeyword.Comma, HtmlTokenType.Comma);
-			Add (HtmlKeyword.NumberSign, HtmlTokenType.NumberSign);
-			Add (HtmlKeyword.Dot, HtmlTokenType.Dot);
-			Add (HtmlKeyword.LeftBracket, HtmlTokenType.LeftBracket);
-			Add (HtmlKeyword.RightBracket, HtmlTokenType.RightBracket);
-			Add (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
+			AddSymbol (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
+			AddSymbol (HtmlKeyword.Comma, HtmlTokenType.Comma);
+			AddSymbol (HtmlKeyword.NumberSign, HtmlTokenType.NumberSign);
+			AddSymbol (HtmlKeyword.Dot, HtmlTokenType.Dot);
+			AddSymbol (HtmlKeyword.LeftBracket, HtmlTokenType.LeftBracket);
+			AddSymbol (HtmlKeyword.RightBracket, HtmlTokenType.RightBracket);
+			AddSymbol (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
 		}
 
 		public HtmlElement QuerySelector (string path) {

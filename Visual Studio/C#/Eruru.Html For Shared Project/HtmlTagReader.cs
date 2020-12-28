@@ -13,7 +13,7 @@ namespace Eruru.Html {
 			}
 		}
 
-		public bool ReadElement (out HtmlElement element, string name = null, string parentName = null) {
+		public bool ReadElement (out HtmlElement element, string startTagName = null) {
 			if (MoveNext ()) {
 				switch (Current.Type) {
 					case HtmlTagType.Define:
@@ -28,10 +28,9 @@ namespace Eruru.Html {
 							if (content.Length > 0) {
 								element.Elements.Add (new HtmlElement (HtmlElementType.Text, content));
 							}
-							TextTokenizer.Read ();
 							return true;
 						}
-						while (ReadElement (out HtmlElement childElement, element.Name, name)) {
+						while (ReadElement (out HtmlElement childElement, element.Name)) {
 							if (childElement is null) {
 								continue;
 							}
@@ -39,18 +38,10 @@ namespace Eruru.Html {
 						}
 						return true;
 					case HtmlTagType.End:
-						if (name != null && Current.Name != name) {
-							if (parentName != null && HtmlApi.Equals (Current.Name, parentName)) {
-								//Console.WriteLine ($"标签不配对，{name}没有结束标签");
-								element = null;
-								return false;
-							}
-							//Console.WriteLine ($"标签不配对，{Current.Name}没有开始标签");
-							element = null;
-							return true;
+						if (startTagName != null && !HtmlApi.Equals (Current.Name, startTagName)) {
+							Buffer.Push (Current);
 						}
-						element = null;
-						return false;
+						break;
 					case HtmlTagType.Text:
 					case HtmlTagType.Comment:
 						element = new HtmlElement (HtmlApi.TagTypeToElementType (Current.Type), Current.Content);

@@ -210,7 +210,7 @@ namespace Eruru.Html {
 
 		public string InnerHtml {
 
-			get => Serialize (false).ToString ();
+			get => Serialize (false, false).ToString ();
 
 		}
 		public string InnerText {

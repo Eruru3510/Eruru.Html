@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Eruru.Html;
 
 namespace ConsoleApp1 {
@@ -8,6 +9,8 @@ namespace ConsoleApp1 {
 
 		static void Main (string[] args) {
 			Console.Title = nameof (ConsoleApp1);
+			Test ();
+			Console.ReadLine ();
 			Html html = Html.Load (@"D:\1.html");
 			foreach (HtmlElement element in html.QuerySelectorAll (".tbox .ssbox")) {
 				HtmlElement titleA = element.QuerySelector (".title a");
@@ -19,6 +22,13 @@ namespace ConsoleApp1 {
 			}
 			TestZhiHu ();
 			Console.ReadLine ();
+		}
+
+		static void Test () {
+			Html html = Html.Parse (File.ReadAllText (@"D:\Users\Eruru\Downloads\QQ\1633756198\1.html"));
+			foreach (var a in html.QuerySelectorAll (".wrap.searchbar > a")) {
+				Console.WriteLine (a.GetAttributeValue ("href"));
+			}
 		}
 
 		static void TestZhiHu () {

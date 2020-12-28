@@ -20,6 +20,10 @@
 		Integer,
 		Decimal,
 		String,
+		DefineTag,
+		SingleTag,
+		EndTag,
+		BlockComment
 
 	}
 

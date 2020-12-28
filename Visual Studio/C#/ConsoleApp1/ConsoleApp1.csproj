@@ -41,9 +41,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eruru.Html For .NET Framework 2.0\Eruru.Html_For_.NET_Framework_2.0.csproj">
-      <Project>{2c64c437-677a-4041-87fc-9f672625f293}</Project>
-      <Name>Eruru.Html_For_.NET_Framework_2.0</Name>
+    <ProjectReference Include="..\Eruru.Html\Eruru.Html.csproj">
+      <Project>{11866ab2-1ad9-4936-be4d-d8a71d40baa4}</Project>
+      <Name>Eruru.Html</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
