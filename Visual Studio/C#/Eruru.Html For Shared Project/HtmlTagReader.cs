@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Eruru.Html {
@@ -6,6 +7,7 @@ namespace Eruru.Html {
 	public class HtmlTagReader : HtmlTextReader {
 
 		readonly string[] ContentTags = { "script", "style" };
+		readonly List<string> Tags = new List<string> ();
 
 		public HtmlTagReader (TextReader textReader) : base (textReader) {
 			if (textReader is null) {
@@ -13,7 +15,11 @@ namespace Eruru.Html {
 			}
 		}
 
-		public bool ReadElement (out HtmlElement element, string startTagName = null) {
+		public bool ReadElement (out HtmlElement element) {
+			return ReadElement (out element, null);
+		}
+
+		bool ReadElement (out HtmlElement element, string endTagName = null) {
 			if (MoveNext ()) {
 				switch (Current.Type) {
 					case HtmlTagType.Define:
@@ -30,6 +36,7 @@ namespace Eruru.Html {
 							}
 							return true;
 						}
+						Tags.Add (Current.Name);
 						while (ReadElement (out HtmlElement childElement, element.Name)) {
 							if (childElement is null) {
 								continue;
@@ -38,9 +45,15 @@ namespace Eruru.Html {
 						}
 						return true;
 					case HtmlTagType.End:
-						if (startTagName != null && !HtmlApi.Equals (Current.Name, startTagName)) {
-							Buffer.Push (Current);
+						if (endTagName != null && !HtmlApi.Equals (Current.Name, endTagName)) {
+							if (Tags.Contains (Current.Name)) {
+								Buffer.Push (Current);
+							} else {
+								element = null;
+								return true;
+							}
 						}
+						Tags.RemoveAt (Tags.Count - 1);
 						break;
 					case HtmlTagType.Text:
 					case HtmlTagType.Comment:

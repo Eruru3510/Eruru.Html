@@ -10,7 +10,24 @@ namespace ConsoleApp1 {
 		static void Main (string[] args) {
 			Console.Title = nameof (ConsoleApp1);
 			Test ();
+			TestCiLiDuoDuo ();
+			TestZhiHu ();
 			Console.ReadLine ();
+		}
+
+		static void Test () {
+			Html html = Html.Parse (File.ReadAllText (@"D:\Temp.html"));
+			foreach (var a in html.QuerySelectorAll (".wrap.searchbar > a")) {
+				Console.WriteLine (a.GetAttributeValue ("href"));
+			}
+		}
+
+		static void TestIdea () {
+			Html html = Html.Parse (File.ReadAllText (@"D:\IDEA.html"));
+			Console.WriteLine (html.InnerHtml);
+		}
+
+		static void TestCiLiDuoDuo () {
 			Html html = Html.Load (@"D:\1.html");
 			foreach (HtmlElement element in html.QuerySelectorAll (".tbox .ssbox")) {
 				HtmlElement titleA = element.QuerySelector (".title a");
@@ -19,15 +36,6 @@ namespace ConsoleApp1 {
 					continue;
 				}
 				Console.WriteLine ($"{titleA.InnerText}\t{titleA.GetAttributeValue ("href")}\t{sbarA.GetAttributeValue ("href")}");
-			}
-			TestZhiHu ();
-			Console.ReadLine ();
-		}
-
-		static void Test () {
-			Html html = Html.Parse (File.ReadAllText (@"D:\Users\Eruru\Downloads\QQ\1633756198\1.html"));
-			foreach (var a in html.QuerySelectorAll (".wrap.searchbar > a")) {
-				Console.WriteLine (a.GetAttributeValue ("href"));
 			}
 		}
 
