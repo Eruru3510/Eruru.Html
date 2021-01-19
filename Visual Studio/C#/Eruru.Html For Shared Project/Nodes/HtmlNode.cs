@@ -17,7 +17,7 @@ namespace Eruru.Html {
 		public string TextContent {
 
 			get {
-				StringBuilder stringBuilder = new StringBuilder ();
+				StringBuilder stringBuilder = new StringBuilder (NodeValue);
 				ForEachText (text => {
 					stringBuilder.Append (text.NodeValue);
 					return true;
@@ -29,7 +29,35 @@ namespace Eruru.Html {
 		public HtmlElement ParentElement { get; }
 		public HtmlNode PreviousSibling { get; internal set; }
 		public HtmlNode NextSibling { get; internal set; }
-		public List<HtmlNode> ChildNodes { get; } = new List<HtmlNode> ();
+		public HtmlElement PreviousElementSibling {
+
+			get {
+				switch (PreviousSibling) {
+					case null:
+						return null;
+					case HtmlElement element:
+						return element;
+					default:
+						return NextSibling.NextElementSibling;
+				}
+			}
+
+		}
+		public HtmlElement NextElementSibling {
+
+			get {
+				switch (NextSibling) {
+					case null:
+						return null;
+					case HtmlElement element:
+						return element;
+					default:
+						return NextSibling.NextElementSibling;
+				}
+			}
+
+		}
+		public List<HtmlNode> ChildNodes { get; }
 		public List<HtmlElement> Children {
 
 			get {
@@ -53,7 +81,17 @@ namespace Eruru.Html {
 			NodeType = nodeType;
 			NodeName = nodeName ?? throw new ArgumentNullException (nameof (nodeName));
 			NodeValue = nodeValue;
+			ChildNodes = new List<HtmlNode> ();
 			ParentElement = parentElement;
+		}
+		internal HtmlNode (List<HtmlNode> childNodes) {
+			ChildNodes = childNodes ?? throw new ArgumentNullException (nameof (childNodes));
+		}
+
+		protected string Serialize (bool isOuter, bool compress) {
+			StringBuilder stringBuilder = new StringBuilder ();
+			Serialize (stringBuilder, isOuter, compress);
+			return stringBuilder.ToString ();
 		}
 
 		protected bool ForEach (HtmlFunc<HtmlNode, bool> func, int maxDepth = -1) {
@@ -116,10 +154,176 @@ namespace Eruru.Html {
 			}, maxDepth);
 		}
 
-		protected string Serialize (bool isOuter, bool compress) {
-			StringBuilder stringBuilder = new StringBuilder ();
-			Serialize (stringBuilder, isOuter, compress);
-			return stringBuilder.ToString ();
+		protected HtmlElement GetElementById (string id, int maxDepth = -1) {
+			if (id is null) {
+				throw new ArgumentNullException (nameof (id));
+			}
+			return GetElement (element => {
+				return HtmlApi.Equals (element.GetAttribute (HtmlKeyword.ID), id);
+			}, maxDepth);
+		}
+
+		protected HtmlElement GetElementByTagName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return GetElement (element => {
+				return HtmlApi.Equals (element.LocalName, name);
+			}, maxDepth);
+		}
+
+		protected HtmlElement GetElementByClassName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			string[] classes = HtmlApi.Split (name);
+			HtmlAttribute attribute;
+			return GetElement (element => {
+				attribute = element.GetAttributeNode (HtmlKeyword.Class);
+				if (attribute is null || !HtmlApi.Contains (classes, attribute)) {
+					return false;
+				}
+				return true;
+			}, maxDepth);
+		}
+
+		protected HtmlElement GetElementByName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return GetElement (element => {
+				return HtmlApi.Equals (element.GetAttribute (HtmlKeyword.Name), name);
+			}, maxDepth);
+		}
+
+		protected HtmlElement GetElementByAttribute (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlAttribute attribute;
+			return GetElement (element => {
+				attribute = element.GetAttributeNode (name);
+				if (attribute is null) {
+					return false;
+				}
+				return true;
+			}, maxDepth);
+		}
+		protected HtmlElement GetElementByAttribute (string name, string value, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return GetElement (element => {
+				return HtmlApi.Equals (element.GetAttribute (name), value);
+			}, maxDepth);
+		}
+
+		protected List<HtmlElement> GetElementsByTagName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return GetElements (element => {
+				return HtmlApi.Equals (element.LocalName, name);
+			}, maxDepth);
+		}
+
+		protected List<HtmlElement> GetElementsByClassName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			string[] classes = HtmlApi.Split (name);
+			HtmlAttribute attribute;
+			return GetElements (element => {
+				attribute = element.GetAttributeNode (HtmlKeyword.Class);
+				if (attribute is null || !HtmlApi.Contains (classes, attribute)) {
+					return false;
+				}
+				return true;
+			}, maxDepth);
+		}
+
+		protected List<HtmlElement> GetElementsByName (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			return GetElements (element => {
+				return HtmlApi.Equals (element.GetAttribute (HtmlKeyword.Name), name);
+			}, maxDepth);
+		}
+
+		protected List<HtmlElement> GetElementsByAttribute (string name, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			HtmlAttribute attribute;
+			return GetElements (element => {
+				attribute = element.GetAttributeNode (name);
+				if (attribute is null) {
+					return false;
+				}
+				return true;
+			}, maxDepth);
+		}
+		protected List<HtmlElement> GetElementsByAttribute (string name, string value, int maxDepth = -1) {
+			if (name is null) {
+				throw new ArgumentNullException (nameof (name));
+			}
+			if (value is null) {
+				throw new ArgumentNullException (nameof (value));
+			}
+			return GetElements (element => {
+				return HtmlApi.Equals (element.GetAttribute (name), value);
+			}, maxDepth);
+		}
+
+		protected HtmlElement QuerySelector (string path) {
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
+			}
+			using (HtmlSelector selector = new HtmlSelector (this)) {
+				return selector.QuerySelector (path);
+			}
+		}
+
+		protected List<HtmlElement> QuerySelectorAll (string path) {
+			if (path is null) {
+				throw new ArgumentNullException (nameof (path));
+			}
+			using (HtmlSelector selector = new HtmlSelector (this)) {
+				return selector.QuerySelectorAll (path);
+			}
+		}
+
+		HtmlElement GetElement (HtmlFunc<HtmlElement, bool> func, int maxDepth = -1) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			HtmlElement targetElement = null;
+			ForEachElement (element => {
+				if (func (element)) {
+					targetElement = element;
+					return false;
+				}
+				return true;
+			}, maxDepth);
+			return targetElement;
+		}
+
+		List<HtmlElement> GetElements (HtmlFunc<HtmlElement, bool> func, int maxDepth = -1) {
+			if (func is null) {
+				throw new ArgumentNullException (nameof (func));
+			}
+			List<HtmlElement> elements = new List<HtmlElement> ();
+			ForEachElement (element => {
+				if (func (element)) {
+					elements.Add (element);
+				}
+				return true;
+			}, maxDepth);
+			return elements;
 		}
 
 		void Serialize (StringBuilder stringBuilder, bool writeSelf, bool compress, int indentLevel = 0) {

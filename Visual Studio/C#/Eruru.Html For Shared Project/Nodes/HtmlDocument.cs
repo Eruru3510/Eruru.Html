@@ -10,6 +10,8 @@ namespace Eruru.Html {
 		public HtmlElement Head { get; private set; }
 		public HtmlElement Body { get; private set; }
 
+		internal HtmlElement Root;
+
 		public HtmlDocument () : base (HtmlNodeType.Document, "#document", null, null) {
 
 		}
@@ -48,110 +50,102 @@ namespace Eruru.Html {
 					document.ChildNodes.Add (node);
 				}
 			}
-			document.ForEachElement (element => {
-				if (HtmlApi.Equals (element.LocalName, HtmlKeyword.Html)) {
-					document.Html = element;
-					return false;
-				}
-				return true;
-			});
-			if (document.Html is null) {
-				throw new Exception ($"文档缺少名为\"{HtmlKeyword.Html}\"的根标签");
-			}
+			document.Root = new HtmlElement (document.ChildNodes);
+			document.Html = document.GetElementByTagName (HtmlKeyword.Html);
 			document.Head = document.GetElementByTagName (HtmlKeyword.Head);
 			document.Body = document.GetElementByTagName (HtmlKeyword.Body);
 			return document;
 		}
 
-		public HtmlElement GetElementById (string id, int maxDepth = -1) {
+		public new HtmlElement GetElementById (string id, int maxDepth = -1) {
 			if (id is null) {
 				throw new ArgumentNullException (nameof (id));
 			}
-			return Html.GetElementById (id, maxDepth);
+			return base.GetElementById (id, maxDepth);
 		}
 
-		public HtmlElement GetElementByTagName (string name, int maxDepth = -1) {
+		public new HtmlElement GetElementByTagName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementByTagName (name, maxDepth);
+			return base.GetElementByTagName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByClassName (string name, int maxDepth = -1) {
+		public new HtmlElement GetElementByClassName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementByClassName (name, maxDepth);
+			return base.GetElementByClassName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByName (string name, int maxDepth = -1) {
+		public new HtmlElement GetElementByName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementByName (name, maxDepth);
+			return base.GetElementByName (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByAttribute (string name, int maxDepth = -1) {
+		public new HtmlElement GetElementByAttribute (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementByAttribute (name, maxDepth);
+			return base.GetElementByAttribute (name, maxDepth);
 		}
 
-		public HtmlElement GetElementByAttribute (string name, string value, int maxDepth = -1) {
+		public new HtmlElement GetElementByAttribute (string name, string value, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementByAttribute (name, maxDepth);
+			return base.GetElementByAttribute (name, maxDepth);
 		}
 
-		public List<HtmlElement> GetElementsByTagName (string name, int maxDepth = -1) {
+		public new List<HtmlElement> GetElementsByTagName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementsByTagName (name, maxDepth);
+			return base.GetElementsByTagName (name, maxDepth);
 		}
 
-		public List<HtmlElement> GetElementsByClassName (string name, int maxDepth = -1) {
+		public new List<HtmlElement> GetElementsByClassName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementsByClassName (name, maxDepth);
+			return base.GetElementsByClassName (name, maxDepth);
 		}
 
-		public List<HtmlElement> GetElementsByName (string name, int maxDepth = -1) {
+		public new List<HtmlElement> GetElementsByName (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementsByName (name, maxDepth);
+			return base.GetElementsByName (name, maxDepth);
 		}
 
-		public List<HtmlElement> GetElementsByAttribute (string name, int maxDepth = -1) {
+		public new List<HtmlElement> GetElementsByAttribute (string name, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementsByAttribute (name, maxDepth);
+			return base.GetElementsByAttribute (name, maxDepth);
 		}
 
-		public List<HtmlElement> GetElementsByAttribute (string name, string value, int maxDepth = -1) {
+		public new List<HtmlElement> GetElementsByAttribute (string name, string value, int maxDepth = -1) {
 			if (name is null) {
 				throw new ArgumentNullException (nameof (name));
 			}
-			return Html.GetElementsByAttribute (name, maxDepth);
+			return base.GetElementsByAttribute (name, maxDepth);
 		}
 
-		public HtmlElement QuerySelector (string path) {
+		public new HtmlElement QuerySelector (string path) {
 			if (path is null) {
 				throw new ArgumentNullException (nameof (path));
 			}
-			return Html.QuerySelector (path);
+			return base.QuerySelector (path);
 		}
 
-		public List<HtmlElement> QuerySelectorAll (string path) {
+		public new List<HtmlElement> QuerySelectorAll (string path) {
 			if (path is null) {
 				throw new ArgumentNullException (nameof (path));
 			}
-			return Html.QuerySelectorAll (path);
+			return base.QuerySelectorAll (path);
 		}
 
 	}

@@ -7,16 +7,18 @@ namespace Eruru.Html {
 
 	public class HtmlSelector : TextTokenizer<HtmlTokenType> {
 
-		readonly HtmlElement Root;
+		readonly HtmlNode RootNode;
 
-		public HtmlSelector (HtmlElement root) : base (
+		HtmlElement Root;
+
+		public HtmlSelector (HtmlNode root) : base (
 			HtmlTokenType.End,
 			HtmlTokenType.String,
 			HtmlTokenType.Integer,
 			HtmlTokenType.Decimal,
 			HtmlTokenType.String
 		) {
-			Root = root ?? throw new ArgumentNullException (nameof (root));
+			RootNode = root ?? throw new ArgumentNullException (nameof (root));
 			AddSymbol (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
 			AddSymbol (HtmlKeyword.Comma, HtmlTokenType.Comma);
 			AddSymbol (HtmlKeyword.NumberSign, HtmlTokenType.NumberSign);
@@ -42,6 +44,16 @@ namespace Eruru.Html {
 			List<HtmlElement> elements = new List<HtmlElement> ();
 			List<HtmlElement> targetElements = new List<HtmlElement> ();
 			List<HtmlElement> tempElements = new List<HtmlElement> ();
+			switch (RootNode) {
+				case HtmlElement element:
+					Root = element;
+					break;
+				case HtmlDocument document:
+					Root = document.Root;
+					break;
+				default:
+					throw new Exception ($"必须是元素或文档元素");
+			}
 			targetElements.Add (Root);
 			bool isChild = true;
 			int depth = -1;
