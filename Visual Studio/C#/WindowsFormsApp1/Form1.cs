@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Eruru.Html;
+using HtmlDocument = Eruru.Html.HtmlDocument;
 
 namespace WindowsFormsApp1 {
 
@@ -20,8 +20,8 @@ namespace WindowsFormsApp1 {
 
 		void Parse () {
 			try {
-				Html html = Html.Parse (TextBox_Input.Text);
-				TextBox_Output.Text = html.InnerHtml;
+				HtmlDocument htmlDocument = HtmlDocument.Parse (TextBox_Input.Text);
+				TextBox_Output.Text = htmlDocument.InnerHtml;
 			} catch (Exception exception) {
 				TextBox_Output.Text = exception.ToString ();
 			}

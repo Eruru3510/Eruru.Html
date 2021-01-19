@@ -64,7 +64,7 @@ namespace Eruru.Html {
 							Query (targetElements, tempElements, element => element.GetElementsByClassName (name, depth));
 							break;
 						}
-						Filter (targetElements, element => HtmlApi.Equals (element.GetAttributeValue (HtmlKeyword.ID), name));
+						Filter (targetElements, element => HtmlApi.Equals (element.GetAttribute (HtmlKeyword.ID), name));
 						break;
 					}
 					case HtmlTokenType.Comma: {
@@ -93,11 +93,11 @@ namespace Eruru.Html {
 							case HtmlTokenType.EqualSign:
 								MoveNext ();
 								string value = Current;
-								Filter (targetElements, element => HtmlApi.Equals (element.GetAttributeValue (name), value));
+								Filter (targetElements, element => HtmlApi.Equals (element.GetAttribute (name), value));
 								MoveNext ();
 								break;
 							case HtmlTokenType.RightBracket:
-								Filter (targetElements, element => element.GetAttribute (name) != null);
+								Filter (targetElements, element => element.GetAttributeNode (name) != null);
 								break;
 						}
 						break;

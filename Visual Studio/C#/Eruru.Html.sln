@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{363A08AC-8731-42B4-AAF6-9A65083313F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.Html", "Eruru.Html\Eruru.Html.csproj", "{11866AB2-1AD9-4936-BE4D-D8A71D40BAA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eruru.Html", "Eruru.Html\Eruru.Html.csproj", "{11866AB2-1AD9-4936-BE4D-D8A71D40BAA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{BB109897-7088-4C06-8739-DB32CB20ADB8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -33,6 +35,10 @@ Global
 		{11866AB2-1AD9-4936-BE4D-D8A71D40BAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11866AB2-1AD9-4936-BE4D-D8A71D40BAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11866AB2-1AD9-4936-BE4D-D8A71D40BAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB109897-7088-4C06-8739-DB32CB20ADB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB109897-7088-4C06-8739-DB32CB20ADB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB109897-7088-4C06-8739-DB32CB20ADB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB109897-7088-4C06-8739-DB32CB20ADB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

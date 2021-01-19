@@ -18,6 +18,11 @@ namespace Eruru.Html {
 			new KeyValuePair<char, char> ('n', '\n'),
 			new KeyValuePair<char, char> ('t', '\t')
 		};
+		static readonly string[] SingleTagNames = { "meta", "link", "input", "img", "base", "hr", "br", "param" };
+
+		public static bool IsSingleTag (string tagName) {
+			return Array.Exists (SingleTagNames, singleTagName => Equals (singleTagName, tagName));
+		}
 
 		public static bool HasFlag (Enum a, Enum b) {
 			if (a is null) {
@@ -58,24 +63,6 @@ namespace Eruru.Html {
 
 		public static bool Equals (string a, string b) {
 			return string.Equals (a, b, StringComparison.CurrentCultureIgnoreCase);
-		}
-
-		public static HtmlElementType TagTypeToElementType (HtmlTagType type) {
-			switch (type) {
-				case HtmlTagType.Text:
-					return HtmlElementType.Text;
-				case HtmlTagType.Comment:
-					return HtmlElementType.Comment;
-				case HtmlTagType.Define:
-					return HtmlElementType.Define;
-				case HtmlTagType.Single:
-					return HtmlElementType.Single;
-				case HtmlTagType.Start:
-				case HtmlTagType.End:
-					return HtmlElementType.Double;
-				default:
-					throw new HtmlNotSupportException (type);
-			}
 		}
 
 		public static string[] Split (string text) {

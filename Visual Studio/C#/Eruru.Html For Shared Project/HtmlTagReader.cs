@@ -15,53 +15,63 @@ namespace Eruru.Html {
 			}
 		}
 
-		public bool ReadElement (out HtmlElement element) {
-			return ReadElement (out element, null);
+		public bool ReadNode (out HtmlNode node) {
+			return ReadNode (out node, null);
 		}
 
-		bool ReadElement (out HtmlElement element, string endTagName = null) {
+		bool ReadNode (out HtmlNode node, string endElementLocalName = null) {
 			if (MoveNext ()) {
 				switch (Current.Type) {
 					case HtmlTagType.Define:
-					case HtmlTagType.Single:
-						element = new HtmlElement (Current.Name, HtmlApi.TagTypeToElementType (Current.Type), Current.Attributes);
+						node = new HtmlDocumentType (Current.Attributes);
 						return true;
-					case HtmlTagType.Start:
-						element = new HtmlElement (Current.Name, HtmlApi.TagTypeToElementType (Current.Type), Current.Attributes);
-						if (Array.Exists (ContentTags, tagName => HtmlApi.Equals (tagName, Current.Name))) {
+					case HtmlTagType.Single:
+						node = new HtmlElement (Current.Name, Current.Attributes);
+						return true;
+					case HtmlTagType.Start: {
+						HtmlElement element = new HtmlElement (Current.Name, Current.Attributes);
+						node = element;
+						if (Array.Exists (ContentTags, tagName => HtmlApi.Equals (tagName, element.LocalName))) {
 							TextTokenizer.SkipWhiteSpace ();
-							string content = TextTokenizer.ReadTo ($"</{element.Name}>").TrimEnd ();
-							if (content.Length > 0) {
-								element.Elements.Add (new HtmlElement (HtmlElementType.Text, content));
+							string text = TextTokenizer.ReadTo ($"</{element.LocalName}>").TrimEnd ();
+							if (text.Length > 0) {
+								node.ChildNodes.Add (new HtmlText (text));
 							}
 							return true;
 						}
-						Tags.Add (Current.Name);
-						while (ReadElement (out HtmlElement childElement, element.Name)) {
-							if (childElement is null) {
+						Tags.Add (element.LocalName);
+						while (ReadNode (out HtmlNode childNode, element.LocalName)) {
+							if (childNode is null) {
 								continue;
 							}
-							element.Elements.Add (childElement);
+							node.ChildNodes.Add (childNode);
 						}
 						return true;
+					}
 					case HtmlTagType.End:
-						if (endTagName != null && !HtmlApi.Equals (Current.Name, endTagName)) {
+						if (endElementLocalName != null && !HtmlApi.Equals (Current.Name, endElementLocalName)) {
 							if (Tags.Contains (Current.Name)) {
 								Buffer.Push (Current);
 							} else {
-								element = null;
+								node = null;
 								return true;
 							}
 						}
-						Tags.RemoveAt (Tags.Count - 1);
+						if (Tags.Count > 0) {
+							Tags.RemoveAt (Tags.Count - 1);
+						}
 						break;
 					case HtmlTagType.Text:
-					case HtmlTagType.Comment:
-						element = new HtmlElement (HtmlApi.TagTypeToElementType (Current.Type), Current.Content);
+						node = new HtmlText (Current.Content);
 						return true;
+					case HtmlTagType.Comment:
+						node = new HtmlComment (Current.Content);
+						return true;
+					default:
+						throw new NotImplementedException (Current.Type.ToString ());
 				}
 			}
-			element = null;
+			node = null;
 			return false;
 		}
 

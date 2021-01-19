@@ -9,20 +9,26 @@
     <Import_RootNamespace>Eruru.Html</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Html.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlElementType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\HtmlTextReaderException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlDocumentType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlDocument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlKeyword.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlNotSupportException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\HtmlNodeType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlComment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTag.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlTagType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\HtmlTagType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlTextReaderException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlTagReader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HtmlTokenType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IHtmlElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\HtmlTokenType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Enums\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Exceptions\" />
   </ItemGroup>
 </Project>

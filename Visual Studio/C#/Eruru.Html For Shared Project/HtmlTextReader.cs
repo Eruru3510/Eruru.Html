@@ -17,8 +17,6 @@ namespace Eruru.Html {
 		);
 		protected readonly Stack<HtmlTag> Buffer = new Stack<HtmlTag> ();
 
-		readonly string[] SingleTags = { "meta", "link", "input", "img", "base", "hr", "br", "param" };
-
 		HtmlTag _Current;
 		bool NeedMoveNext = true;
 
@@ -150,8 +148,8 @@ namespace Eruru.Html {
 							tag.Name = GetName ();
 							bool isSingle = false;
 							tag.Attributes = GetAttributes (ref isSingle);
-							if (isSingle == false) {
-								isSingle = Array.IndexOf (SingleTags, tag.Name) != -1;
+							if (!isSingle) {
+								isSingle = HtmlApi.IsSingleTag (tag.Name);
 							}
 							if (isSingle) {
 								tag.Type = HtmlTagType.Single;
@@ -183,7 +181,7 @@ namespace Eruru.Html {
 					break;
 				default:
 					tag.Type = HtmlTagType.Text;
-					tag.Content = TextTokenizer.ReadTo ("<", false, true);
+					tag.Content = TextTokenizer.ReadTo ("<", false, true).TrimEnd ();
 					break;
 			}
 			Current = tag;
