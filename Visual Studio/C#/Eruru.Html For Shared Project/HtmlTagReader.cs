@@ -16,35 +16,41 @@ namespace Eruru.Html {
 		}
 
 		public bool ReadNode (out HtmlNode node) {
-			return ReadNode (out node, null);
+			return ReadNode (null, out node);
 		}
 
-		bool ReadNode (out HtmlNode node, string endElementLocalName = null) {
+		bool ReadNode (HtmlElement parentElement, out HtmlNode node, string endElementLocalName = null) {
 			if (MoveNext ()) {
 				switch (Current.Type) {
 					case HtmlTagType.Define:
-						node = new HtmlDocumentType (Current.Attributes);
+						node = new HtmlDocumentType (Current.Attributes, parentElement);
 						return true;
 					case HtmlTagType.Single:
-						node = new HtmlElement (Current.Name, Current.Attributes);
+						node = new HtmlElement (Current.Name, Current.Attributes, parentElement);
 						return true;
 					case HtmlTagType.Start: {
-						HtmlElement element = new HtmlElement (Current.Name, Current.Attributes);
+						HtmlElement element = new HtmlElement (Current.Name, Current.Attributes, parentElement);
 						node = element;
 						if (Array.Exists (ContentTags, tagName => HtmlApi.Equals (tagName, element.LocalName))) {
 							TextTokenizer.SkipWhiteSpace ();
 							string text = TextTokenizer.ReadTo ($"</{element.LocalName}>").TrimEnd ();
 							if (text.Length > 0) {
-								node.ChildNodes.Add (new HtmlText (text));
+								node.ChildNodes.Add (new HtmlText (text, element));
 							}
 							return true;
 						}
 						Tags.Add (element.LocalName);
-						while (ReadNode (out HtmlNode childNode, element.LocalName)) {
+						HtmlNode lastNode = null;
+						while (ReadNode (element, out HtmlNode childNode, element.LocalName)) {
 							if (childNode is null) {
 								continue;
 							}
+							if (lastNode != null) {
+								lastNode.NextSibling = childNode;
+								childNode.PreviousSibling = lastNode;
+							}
 							node.ChildNodes.Add (childNode);
+							lastNode = childNode;
 						}
 						return true;
 					}
@@ -62,10 +68,10 @@ namespace Eruru.Html {
 						}
 						break;
 					case HtmlTagType.Text:
-						node = new HtmlText (Current.Content);
+						node = new HtmlText (Current.Content, parentElement);
 						return true;
 					case HtmlTagType.Comment:
-						node = new HtmlComment (Current.Content);
+						node = new HtmlComment (Current.Content, parentElement);
 						return true;
 					default:
 						throw new NotImplementedException (Current.Type.ToString ());

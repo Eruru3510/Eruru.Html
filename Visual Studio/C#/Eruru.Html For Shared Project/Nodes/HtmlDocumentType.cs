@@ -7,7 +7,7 @@ namespace Eruru.Html {
 
 		public List<HtmlAttribute> Attributes { get; }
 
-		public HtmlDocumentType (List<HtmlAttribute> attributes) : base (HtmlNodeType.DocumentType, "文档类型名（暂未实现）", null) {
+		public HtmlDocumentType (List<HtmlAttribute> attributes, HtmlElement parentElement) : base (HtmlNodeType.DocumentType, (attributes?.Count ?? 0) == 0 ? null : attributes[0].Value, null, parentElement) {
 			Attributes = attributes ?? throw new ArgumentNullException (nameof (attributes));
 		}
 

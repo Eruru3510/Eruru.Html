@@ -2,7 +2,7 @@
 
 	public class HtmlText : HtmlNode {
 
-		public HtmlText (string nodeValue) : base (HtmlNodeType.Text, "#text", nodeValue) {
+		public HtmlText (string nodeValue, HtmlElement parentElement) : base (HtmlNodeType.Text, "#text", nodeValue, parentElement) {
 
 		}
 

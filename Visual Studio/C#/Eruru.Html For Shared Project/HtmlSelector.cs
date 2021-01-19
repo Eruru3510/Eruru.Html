@@ -59,12 +59,12 @@ namespace Eruru.Html {
 					}
 					case HtmlTokenType.NumberSign: {
 						MoveNext ();
-						string name = Current;
+						string id = Current;
 						if (isChild) {
-							Query (targetElements, tempElements, element => element.GetElementsByClassName (name, depth));
+							Query (targetElements, tempElements, element => element.GetElementsByAttribute (HtmlKeyword.ID, id, depth));
 							break;
 						}
-						Filter (targetElements, element => HtmlApi.Equals (element.GetAttribute (HtmlKeyword.ID), name));
+						Filter (targetElements, element => HtmlApi.Equals (element.GetAttribute (HtmlKeyword.ID), id));
 						break;
 					}
 					case HtmlTokenType.Comma: {

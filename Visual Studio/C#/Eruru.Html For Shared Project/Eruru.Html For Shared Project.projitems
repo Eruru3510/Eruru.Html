@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HtmlApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\HtmlTextReaderException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IHtmlDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlDocumentType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Nodes\HtmlElement.cs" />
@@ -30,5 +31,6 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Enums\" />
     <Folder Include="$(MSBuildThisFileDirectory)Exceptions\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\" />
   </ItemGroup>
 </Project>
