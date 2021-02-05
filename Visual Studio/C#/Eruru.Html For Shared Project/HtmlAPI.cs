@@ -62,7 +62,7 @@ namespace Eruru.Html {
 		}
 
 		public static bool Equals (string a, string b) {
-			return string.Equals (a, b, StringComparison.CurrentCultureIgnoreCase);
+			return string.Equals (a, b, StringComparison.OrdinalIgnoreCase);
 		}
 
 		public static string[] Split (string text) {
