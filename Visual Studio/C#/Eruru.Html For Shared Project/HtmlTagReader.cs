@@ -6,7 +6,6 @@ namespace Eruru.Html {
 
 	public class HtmlTagReader : HtmlTextReader {
 
-		readonly string[] ContentTags = { "script", "style" };
 		readonly List<string> Tags = new List<string> ();
 
 		public HtmlTagReader (TextReader textReader) : base (textReader) {
@@ -31,7 +30,7 @@ namespace Eruru.Html {
 					case HtmlTagType.Start: {
 						HtmlElement element = new HtmlElement (Current.Name, Current.Attributes, parentElement);
 						node = element;
-						if (Array.Exists (ContentTags, tagName => HtmlApi.Equals (tagName, element.LocalName))) {
+						if (HtmlApi.IsContentTag (element.LocalName)) {
 							TextTokenizer.SkipWhiteSpace ();
 							string text = TextTokenizer.ReadTo ($"</{element.LocalName}>").TrimEnd ();
 							if (text.Length > 0) {
@@ -68,7 +67,7 @@ namespace Eruru.Html {
 						}
 						break;
 					case HtmlTagType.Text:
-						node = new HtmlText (Current.Content, parentElement);
+						node = new HtmlText (HtmlApi.Unescape (Current.Content), parentElement);
 						return true;
 					case HtmlTagType.Comment:
 						node = new HtmlComment (Current.Content, parentElement);

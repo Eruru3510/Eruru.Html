@@ -326,15 +326,16 @@ namespace Eruru.Html {
 			return elements;
 		}
 
-		void Serialize (StringBuilder stringBuilder, bool writeSelf, bool compress, int indentLevel = 0) {
+		void Serialize (StringBuilder stringBuilder, bool writeSelf, bool compress, int indentLevel = 0, bool unescape = false) {
 			if (stringBuilder is null) {
 				throw new ArgumentNullException (nameof (stringBuilder));
 			}
 			bool needWriteEndTag = false;
+			bool needUnescape = false;
 			if (writeSelf) {
 				switch (this) {
 					case HtmlText _:
-						stringBuilder.Append (NodeValue);
+						stringBuilder.Append (unescape ? HtmlApi.CancelUnescape (NodeValue) : NodeValue);
 						break;
 					case HtmlComment _:
 						stringBuilder.Append ($"<!--{NodeValue}-->");
@@ -349,6 +350,9 @@ namespace Eruru.Html {
 						WriteAttribute (stringBuilder, element.Attributes);
 						needWriteEndTag = !HtmlApi.IsSingleTag (element.LocalName);
 						stringBuilder.Append (needWriteEndTag ? ">" : "/>");
+						if (needWriteEndTag && !HtmlApi.IsContentTag (element.LocalName)) {
+							needUnescape = true;
+						}
 						break;
 					default:
 						throw new NotImplementedException (ToString ());
@@ -359,7 +363,7 @@ namespace Eruru.Html {
 				if (writeSelf || i > 0) {
 					NewLineIndent (stringBuilder, compress, indentLevel);
 				}
-				ChildNodes[i].Serialize (stringBuilder, true, compress, indentLevel);
+				ChildNodes[i].Serialize (stringBuilder, true, compress, indentLevel, needUnescape);
 			}
 			if (writeSelf) {
 				indentLevel--;
@@ -395,7 +399,7 @@ namespace Eruru.Html {
 			foreach (HtmlAttribute attribute in attributes) {
 				stringBuilder.Append ($" {attribute.Name}");
 				if (attribute.Values != null) {
-					stringBuilder.Append ($"=\"{attribute.Value}\"");
+					stringBuilder.Append ($"=\"{HtmlApi.CancelUnescapeAttributeValue (attribute.Value)}\"");
 				}
 			}
 		}

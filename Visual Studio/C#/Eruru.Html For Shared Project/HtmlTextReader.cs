@@ -67,10 +67,11 @@ namespace Eruru.Html {
 								switch (TextTokenizer.Current.Type) {
 									case HtmlTokenType.String:
 										attribute.Values = new List<string> ();
+										string value = HtmlApi.Unescape (TextTokenizer.Current.String);
 										if (HtmlApi.Equals (attribute.Name, HtmlKeyword.Class)) {
-											attribute.Values.AddRange (HtmlApi.Split (TextTokenizer.Current));
+											attribute.Values.AddRange (HtmlApi.Split (value));
 										} else {
-											attribute.Values.Add (TextTokenizer.Current);
+											attribute.Values.Add (value);
 										}
 										TextTokenizer.MoveNext ();
 										continue;
