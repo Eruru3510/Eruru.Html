@@ -13,7 +13,8 @@ namespace Eruru.Html {
 			HtmlTokenType.String,
 			HtmlTokenType.String,
 			HtmlTokenType.String,
-			HtmlTokenType.String
+			HtmlTokenType.String,
+			true
 		);
 		protected readonly Stack<HtmlTag> Buffer = new Stack<HtmlTag> ();
 
