@@ -221,11 +221,13 @@ namespace Eruru.Html {
 		}
 
 		static void EatSpace (string text, ref int i, out int count) {
-			i++;
 			count = 0;
-			while (text[i] == ' ') {
-				count++;
-				i++;
+			for (i++; i < text.Length; i++) {
+				if (text[i] == ' ') {
+					count++;
+					continue;
+				}
+				break;
 			}
 			i--;
 		}
