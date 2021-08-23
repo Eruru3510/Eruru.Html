@@ -31,7 +31,7 @@ namespace Eruru.Html {
 						HtmlElement element = new HtmlElement (Current.Name, Current.Attributes, parentElement);
 						node = element;
 						if (HtmlApi.IsContentTag (element.LocalName)) {
-							TextTokenizer.SkipWhiteSpace ();
+							TextTokenizer.SkipIgnoreCharacters ();
 							string text = TextTokenizer.ReadTo ($"</{element.LocalName}>").TrimEnd ();
 							if (text.Length > 0) {
 								node.ChildNodes.Add (new HtmlText (text, element));

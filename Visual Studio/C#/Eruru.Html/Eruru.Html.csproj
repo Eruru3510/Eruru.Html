@@ -8,7 +8,7 @@
 	<Import Project="..\Eruru.Html For Shared Project\Eruru.Html For Shared Project.projitems" Label="Shared" />
 
 	<ItemGroup>
-	  <PackageReference Include="Eruru.TextTokenizer" Version="1.0.0.2" />
+	  <PackageReference Include="Eruru.LexicalAnalyzer" Version="1.0.0.1" />
 	</ItemGroup>
 
 </Project>

@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Eruru.LexicalAnalyzer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Eruru.TextTokenizer;
 
 namespace Eruru.Html {
 
 	public class HtmlTextReader : IDisposable, IEnumerator<HtmlTag>, IEnumerable<HtmlTag> {
 
-		protected readonly TextTokenizer<HtmlTokenType> TextTokenizer = new TextTokenizer<HtmlTokenType> (
+		protected readonly LexicalAnalyzer<HtmlTokenType> TextTokenizer = new LexicalAnalyzer<HtmlTokenType> (
 			HtmlTokenType.End,
 			HtmlTokenType.String,
 			HtmlTokenType.String,
@@ -26,17 +26,17 @@ namespace Eruru.Html {
 				throw new ArgumentNullException (nameof (textReader));
 			}
 			TextTokenizer.TextReader = textReader;
-			TextTokenizer.AddSymbol (HtmlKeyword.LeftAngleBracket, HtmlTokenType.LeftAngleBracket);
-			TextTokenizer.AddSymbol (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
-			TextTokenizer.AddSymbol (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
-			TextTokenizer.AddStringSymbol (HtmlKeyword.DefineTag, HtmlTokenType.DefineTag);
-			TextTokenizer.AddStringSymbol (HtmlKeyword.SingleTag, HtmlTokenType.SingleTag);
-			TextTokenizer.AddStringSymbol (HtmlKeyword.EndTag, HtmlTokenType.EndTag);
+			TextTokenizer.Characters.Add (HtmlKeyword.LeftAngleBracket, HtmlTokenType.LeftAngleBracket);
+			TextTokenizer.Characters.Add (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
+			TextTokenizer.Characters.Add (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
+			TextTokenizer.AddSymbol (HtmlKeyword.DefineTag, HtmlTokenType.DefineTag);
+			TextTokenizer.AddSymbol (HtmlKeyword.SingleTag, HtmlTokenType.SingleTag);
+			TextTokenizer.AddSymbol (HtmlKeyword.EndTag, HtmlTokenType.EndTag);
 			TextTokenizer.AddBlock (HtmlTokenType.BlockComment, HtmlKeyword.BlockCommentHead, HtmlKeyword.BlockCommentTail);
-			TextTokenizer.AllowSymbolsBreakKeyword = false;
-			TextTokenizer.AddBreakKeywordCharacter (HtmlKeyword.EqualSign);
-			TextTokenizer.AddBreakKeywordCharacter (HtmlKeyword.Slash);
-			TextTokenizer.AddBreakKeywordCharacter (HtmlKeyword.RightAngleBracket);
+			TextTokenizer.AllowCharactersBreakKeyword = false;
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.EqualSign);
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.Slash);
+			TextTokenizer.BreakKeywordCharacters.Add (HtmlKeyword.RightAngleBracket);
 		}
 
 		string GetName () {
@@ -133,7 +133,7 @@ namespace Eruru.Html {
 				Current = Buffer.Pop ();
 				return true;
 			}
-			TextTokenizer.SkipWhiteSpace ();
+			TextTokenizer.SkipIgnoreCharacters ();
 			HtmlTag tag = new HtmlTag {
 				Index = TextTokenizer.Index
 			};
@@ -141,7 +141,7 @@ namespace Eruru.Html {
 				Current = tag;
 				return false;
 			}
-			switch (TextTokenizer.PeekCharacter ()) {
+			switch (TextTokenizer.Peek ()) {
 				case HtmlKeyword.LeftAngleBracket:
 					TextTokenizer.MoveNext ();
 					switch (TextTokenizer.Current.Type) {
@@ -183,7 +183,7 @@ namespace Eruru.Html {
 					break;
 				default:
 					tag.Type = HtmlTagType.Text;
-					tag.Content = TextTokenizer.ReadTo ("<", false, true).TrimEnd ();
+					tag.Content = TextTokenizer.ReadTo ("<", false).TrimEnd ();
 					break;
 			}
 			Current = tag;

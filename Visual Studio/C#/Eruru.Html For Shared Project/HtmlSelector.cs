@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Eruru.LexicalAnalyzer;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Eruru.TextTokenizer;
 
 namespace Eruru.Html {
 
-	public class HtmlSelector : TextTokenizer<HtmlTokenType> {
+	public class HtmlSelector : LexicalAnalyzer<HtmlTokenType> {
 
 		readonly HtmlNode RootNode;
 
@@ -19,13 +19,13 @@ namespace Eruru.Html {
 			HtmlTokenType.String
 		) {
 			RootNode = root ?? throw new ArgumentNullException (nameof (root));
-			AddSymbol (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
-			AddSymbol (HtmlKeyword.Comma, HtmlTokenType.Comma);
-			AddSymbol (HtmlKeyword.NumberSign, HtmlTokenType.NumberSign);
-			AddSymbol (HtmlKeyword.Dot, HtmlTokenType.Dot);
-			AddSymbol (HtmlKeyword.LeftBracket, HtmlTokenType.LeftBracket);
-			AddSymbol (HtmlKeyword.RightBracket, HtmlTokenType.RightBracket);
-			AddSymbol (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
+			Characters.Add (HtmlKeyword.EqualSign, HtmlTokenType.EqualSign);
+			Characters.Add (HtmlKeyword.Comma, HtmlTokenType.Comma);
+			Characters.Add (HtmlKeyword.NumberSign, HtmlTokenType.NumberSign);
+			Characters.Add (HtmlKeyword.Dot, HtmlTokenType.Dot);
+			Characters.Add (HtmlKeyword.LeftBracket, HtmlTokenType.LeftBracket);
+			Characters.Add (HtmlKeyword.RightBracket, HtmlTokenType.RightBracket);
+			Characters.Add (HtmlKeyword.RightAngleBracket, HtmlTokenType.RightAngleBracket);
 		}
 
 		public HtmlElement QuerySelector (string path) {

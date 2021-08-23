@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Eruru.LexicalAnalyzer;
+using System;
 using System.Text;
-using Eruru.TextTokenizer;
 
 namespace Eruru.Html {
 
 	public class HtmlTextReaderException<T> : Exception where T : Enum {
 
-		public HtmlTextReaderException (string message, TextTokenizer<T> textTokenizer) {
+		public HtmlTextReaderException (string message, LexicalAnalyzer<T> textTokenizer) {
 			if (message is null) {
 				throw new ArgumentNullException (nameof (message));
 			}
@@ -17,14 +17,15 @@ namespace Eruru.Html {
 			stringBuilder.AppendLine (message);
 			stringBuilder.AppendLine (
 				$"类型：{textTokenizer.Current.Type} " +
-				$"位置：{textTokenizer.Current.StartIndex} " +
+				$"值：{textTokenizer.Current.Value}" +
+				$"索引：{textTokenizer.Current.StartIndex} " +
 				$"长度：{textTokenizer.Current.Length} " +
-				$"值：{textTokenizer.Current.Value}"
+				$"行：{textTokenizer.Current.Line} " +
+				$"行索引：{textTokenizer.Current.LineStartIndex} "
 			);
-			stringBuilder.AppendLine (new string (textTokenizer.Buffer.ToArray ()));
 			HtmlApi.SetExceptionMessage (this, stringBuilder.ToString ());
 		}
-		public HtmlTextReaderException (TextTokenizer<T> textTokenizer, params object[] values) : this (
+		public HtmlTextReaderException (LexicalAnalyzer<T> textTokenizer, params object[] values) : this (
 			$"期望是{string.Join ("或", Array.ConvertAll (values, value => value.ToString ()))}",
 			textTokenizer
 		) {

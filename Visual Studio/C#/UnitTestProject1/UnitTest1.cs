@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Eruru.Html;
+﻿using Eruru.Html;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace UnitTestProject1 {
 
